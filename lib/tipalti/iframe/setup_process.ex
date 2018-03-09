@@ -3,7 +3,7 @@ defmodule Tipalti.IFrame.SetupProcess do
   Used to generate URLs to the Tipalti Setup Process iFrame.
   """
 
-  import Tipalti.Util
+  import Tipalti.IFrame
 
   @type flaggable_fields ::
           :country
@@ -87,7 +87,7 @@ defmodule Tipalti.IFrame.SetupProcess do
             alias: nil,
             email: nil
 
-  @base_url %{
+  @url %{
     sandbox: "https://ui2.sandbox.tipalti.com/PayeeDashboard/Home?",
     production: "https://ui2.tipalti.com/PayeeDashboard/Home?"
   }
@@ -95,9 +95,9 @@ defmodule Tipalti.IFrame.SetupProcess do
   @doc """
   Generates a Setup Process iFrame URL for the given struct of parameters.
   """
-  @spec generate_url(t(), options) :: URI.t()
-  def generate_url(struct, opts \\ []) do
+  @spec url(t(), options()) :: URI.t()
+  def url(struct, opts \\ []) do
     params = Map.from_struct(struct)
-    build_url(@base_url, params, opts)
+    build_url(@url, params, opts)
   end
 end

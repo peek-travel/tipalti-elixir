@@ -1,9 +1,9 @@
-defmodule Tipalti.Util do
+defmodule Tipalti.IFrame do
   @moduledoc false
   import Tipalti.Config
 
   @doc false
-  @spec build_url(map, map, Tipalti.IFrame.SetupProcess.options()) :: URI.t()
+  @spec build_url(map(), map(), Tipalti.IFrame.SetupProcess.options()) :: URI.t()
   def build_url(base_urls, params, opts \\ []) do
     basic_query_string =
       params
@@ -25,10 +25,6 @@ defmodule Tipalti.Util do
   end
 
   @doc false
-  defp build_hashkey(query_string),
-    do: :sha256 |> :crypto.hmac(master_key(), query_string) |> Base.encode16(case: :lower)
-
-  @doc false
   defp format_param({key, value}, params, opts) do
     force = opts[:force] || []
     read_only = opts[:read_only] || []
@@ -47,7 +43,4 @@ defmodule Tipalti.Util do
         Map.put(params, "#{key}", value)
     end
   end
-
-  @doc false
-  defp timestamp, do: DateTime.utc_now() |> DateTime.to_unix()
 end

@@ -1,0 +1,59 @@
+defmodule Tipalti.API.Payee do
+  import Tipalti.API
+
+  @url %{
+    sandbox: "https://api.sandbox.tipalti.com/v6/PayeeFunctions.asmx",
+    production: "https://api.tipalti.com/v6/PayeeFunctions.asmx"
+  }
+
+  @get_payee_details %{
+    name: "GetPayeeDetails",
+    request: %{
+      fields: %{
+        idap: {:string, "idap"}
+      }
+    },
+    response: %{
+      fields: %{
+        name: {:string, "Name"},
+        address: {:string, "Address"},
+        payment_method: {:string, "PaymentMethod"},
+        email: {:string, "Email"}
+      }
+    }
+  }
+  def get_payee_details(idap), do: run(@url, @get_payee_details, %{idap: idap}, idap: idap)
+
+  @payee_payable %{
+    name: "GetPayeeDetails",
+    request: %{
+      fields: %{
+        idap: {:string, "idap"},
+        amount: {:float, "amount"}
+      }
+    },
+    response: %{
+      fields: %{
+        reason: {:string, "s"},
+        payable: {:boolean, "b"}
+      }
+    }
+  }
+  def payee_payable(idap, amount),
+    do: run(@url, @payee_payable, %{idap: idap, amount: amount}, idap: idap, eat: {:float, amount})
+
+  @payee_payment_method %{
+    name: "PayeePaymentMethod",
+    request: %{
+      fields: %{
+        idap: {:string, "idap"}
+      }
+    },
+    response: %{
+      fields: %{
+        payment_method: {:string, "s"}
+      }
+    }
+  }
+  def payee_payment_method(idap), do: run(@url, @payee_payment_method, %{idap: idap}, idap: idap)
+end

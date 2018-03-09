@@ -1,5 +1,5 @@
 defmodule Tipalti do
   @moduledoc """
-  Tipalti iFrame integration library for Elixir.
+  Tipalti integration library for Elixir.
   """
 end

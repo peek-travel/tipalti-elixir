@@ -3,9 +3,9 @@ defmodule Tipalti.IFrame.PaymentsHistory do
   Used to generate URLs to the Tipalti Payments History iFrame.
   """
 
-  import Tipalti.Util
+  import Tipalti.IFrame
 
-  @base_url %{
+  @url %{
     sandbox: "https://ui2.sandbox.tipalti.com/PayeeDashboard/PaymentsHistory?",
     production: "https://ui2.tipalti.com/PayeeDashboard/PaymentsHistory?"
   }
@@ -13,8 +13,8 @@ defmodule Tipalti.IFrame.PaymentsHistory do
   @doc """
   Generates a Payments History iFrame URL for the given payee id (idap).
   """
-  @spec generate_url(String.t()) :: URI.t()
-  def generate_url(idap) do
-    build_url(@base_url, %{:idap => idap})
+  @spec url(String.t()) :: URI.t()
+  def url(idap) do
+    build_url(@url, %{:idap => idap})
   end
 end
