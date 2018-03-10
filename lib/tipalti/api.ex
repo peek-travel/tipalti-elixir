@@ -12,12 +12,14 @@ defmodule Tipalti.API do
   plug Tesla.Middleware.Headers, %{"Content-Type" => "application/soap+xml; charset=utf-8"}
 
   def run(base_urls, function, params, opts \\ []) do
-    base_urls[mode()]
-    |> post(build_soap_body(function, params, opts))
-    |> parse_response(function.response)
+    with {:ok, payload} <- build_soap_payload(function.name, function.request, params, opts) do
+      base_urls[mode()]
+      |> post(payload)
+      |> parse_response(function.response)
+    end
   end
 
-  defp parse_response(%Tesla.Env{status: 200, body: body}, %{fields: fields}) do
+  defp parse_response(%Tesla.Env{status: 200, body: body}, fields) do
     document = parse_document(body)
 
     with [object] <- :xmerl_xpath.string('/soap:Envelope/soap:Body/*/*', document) do
@@ -53,7 +55,7 @@ defmodule Tipalti.API do
       _ ->
         with {:ok, error_code} <- get_content(object, '/*/errorCode'),
              {:ok, error_message} <- get_content(object, '/*/errorMessage') do
-          {:error, %{error_message: error_message, error_code: error_code}}
+          {:error, {:error_response, %{error_message: error_message, error_code: error_code}}}
         end
     end
   end
@@ -64,7 +66,7 @@ defmodule Tipalti.API do
       {:ok, content |> xml_text(:value) |> to_string()}
     else
       _ ->
-        {:error, {:invalid_content, to_string(path)}}
+        {:error, {:invalid_response_content, to_string(path)}}
     end
   end
 
@@ -75,53 +77,81 @@ defmodule Tipalti.API do
     doc
   end
 
-  defp build_soap_body(function, params, opts) do
+  defp build_soap_payload(name, request, params, opts) do
     now = timestamp()
-    key = build_key(now, opts)
-    formatted_params = format_params(params, function.request)
 
-    """
-    <?xml version="1.0" encoding="utf-8"?>
-    <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
-      <soap12:Body>
-        <#{function.name} xmlns="http://Tipalti.org/">
-          <payerName>#{payer()}</payerName>
-          <timestamp>#{now}</timestamp>
-          <key>#{key}</key>
-          #{formatted_params}
-        </#{function.name}>
-      </soap12:Body>
-    </soap12:Envelope>
-    """
+    with {:ok, key} <- build_key(now, request, params, opts),
+         {:ok, formatted_params} <- format_params(params, request) do
+      payload = """
+      <?xml version="1.0" encoding="utf-8"?>
+      <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+          xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+        <soap12:Body>
+          <#{name} xmlns="http://Tipalti.org/">
+            <payerName>#{payer()}</payerName>
+            <timestamp>#{now}</timestamp>
+            <key>#{key}</key>
+            #{formatted_params}
+          </#{name}>
+        </soap12:Body>
+      </soap12:Envelope>
+      """
+
+      {:ok, payload}
+    end
   end
 
   defp format_params(params, request) do
     # TODO: use `request` to format correctly if needed
-    request.fields
-    |> Enum.map(fn {key, field} ->
-      format_param(params[key], field)
-    end)
-    |> Enum.join()
+    params =
+      request
+      |> Enum.map(fn {key, field} ->
+        format_param(params[key], field)
+      end)
+      |> Enum.join()
+
+    {:ok, params}
   end
 
   defp format_param(value, {:string, name}), do: "<#{name}>#{value}</#{name}>"
   defp format_param(value, {:float, name}), do: "<#{name}>#{value}</#{name}>"
   # TODO: error cases
 
-  defp build_key(timestamp, opts) do
-    [
-      payer(),
-      opts[:idap],
-      timestamp,
-      format_eat(opts[:eat])
-    ]
-    |> Enum.join()
-    |> build_hashkey()
+  defp build_key(timestamp, request, params, opts) do
+    with {:ok, eat} <- get_eat(params, request, opts[:eat]) do
+      key =
+        [
+          payer(),
+          opts[:idap],
+          timestamp,
+          eat
+        ]
+        |> Enum.join()
+        |> build_hashkey()
+
+      {:ok, key}
+    end
   end
 
-  defp format_eat(nil), do: nil
-  defp format_eat({:string, string}), do: string
-  defp format_eat({:float, float}), do: float |> trunc() |> to_string()
+  defp get_eat(_, _, nil), do: {:ok, nil}
+
+  defp get_eat(params, request, field) do
+    case request[field] do
+      nil ->
+        {:error, {:eat_field_definition_missing, field}}
+
+      {type, _name} ->
+        case params[field] do
+          nil ->
+            {:error, {:eat_value_missing, field}}
+
+          eat_value ->
+            {:ok, format_eat(type, eat_value)}
+        end
+    end
+  end
+
+  defp format_eat(:string, string), do: string
+  defp format_eat(:float, float), do: float |> trunc() |> to_string()
 end
