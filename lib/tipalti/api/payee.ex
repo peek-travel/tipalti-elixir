@@ -13,9 +13,13 @@ defmodule Tipalti.API.Payee do
     },
     response: %{
       name: {:string, "Name"},
+      company_name: {:string, "CompanyName"},
+      alias: {:string, "Alias"},
       address: {:string, "Address"},
       payment_method: {:string, "PaymentMethod"},
-      email: {:string, "Email"}
+      email: {:string, "Email"},
+      payment_terms_id: {:string, "PaymentTermsID"},
+      payment_terms_name: {:string, "PaymentTermsName"}
     }
   }
   def get_payee_details(idap), do: run(@url, @get_payee_details, %{idap: idap}, idap: idap)

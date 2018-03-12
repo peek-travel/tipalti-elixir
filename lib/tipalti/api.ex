@@ -4,8 +4,9 @@ defmodule Tipalti.API do
   import Tipalti.Config
   import Record, only: [defrecord: 2, extract: 2]
 
-  defrecord :xml_element, extract(:xmlElement, from_lib: "xmerl/include/xmerl.hrl")
-  defrecord :xml_text, extract(:xmlText, from_lib: "xmerl/include/xmerl.hrl")
+  @xmerl "xmerl/include/xmerl.hrl"
+  defrecord :xml_element, extract(:xmlElement, from_lib: @xmerl)
+  defrecord :xml_text, extract(:xmlText, from_lib: @xmerl)
 
   adapter :hackney
 
@@ -67,10 +68,11 @@ defmodule Tipalti.API do
       {:ok, content |> xml_text(:value) |> to_string()}
     else
       _ ->
-        {:error, {:invalid_response_content, to_string(path)}}
+        {:ok, nil}
     end
   end
 
+  defp format_value(nil, _), do: {:ok, nil}
   defp format_value(string, :string), do: {:ok, string}
   defp format_value("false", :boolean), do: {:ok, false}
   defp format_value("true", :boolean), do: {:ok, true}
