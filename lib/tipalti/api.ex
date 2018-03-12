@@ -41,8 +41,9 @@ defmodule Tipalti.API do
   defp build_object([], _object, acc), do: {:ok, acc}
 
   defp build_object([{field, {type, path}} | rest], object, acc) do
-    with {:ok, value} <- get_content(object, '/*/' ++ to_charlist(path)) do
-      build_object(rest, object, Map.put(acc, field, format_value(value, type)))
+    with {:ok, value} <- get_content(object, '/*/' ++ to_charlist(path)),
+         {:ok, formatted_value} <- format_value(value, type) do
+      build_object(rest, object, Map.put(acc, field, formatted_value))
     end
   end
 
@@ -70,7 +71,10 @@ defmodule Tipalti.API do
     end
   end
 
-  defp format_value(string, :string), do: string
+  defp format_value(string, :string), do: {:ok, string}
+  defp format_value("false", :boolean), do: {:ok, false}
+  defp format_value("true", :boolean), do: {:ok, true}
+  defp format_value(value, type), do: {:error, {:invalid_response_value, type, value}}
 
   defp parse_document(body) do
     {doc, _} = body |> to_charlist() |> :xmerl_scan.string()
@@ -81,7 +85,7 @@ defmodule Tipalti.API do
     now = timestamp()
 
     with {:ok, key} <- build_key(now, request, params, opts),
-         {:ok, formatted_params} <- format_params(params, request) do
+         {:ok, formatted_params} <- format_params(params, Enum.to_list(request)) do
       payload = """
       <?xml version="1.0" encoding="utf-8"?>
       <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -102,21 +106,32 @@ defmodule Tipalti.API do
     end
   end
 
-  defp format_params(params, request) do
-    # TODO: use `request` to format correctly if needed
-    params =
-      request
-      |> Enum.map(fn {key, field} ->
-        format_param(params[key], field)
-      end)
-      |> Enum.join()
+  defp format_params(params, request, acc \\ [])
 
-    {:ok, params}
+  defp format_params(_, [], acc), do: {:ok, acc |> Enum.reverse() |> Enum.join()}
+
+  defp format_params(params, [{key, {required?, type, name}} | rest], acc) do
+    case params[key] do
+      nil ->
+        if required? == :required do
+          {:error, {:missing_required_param, key}}
+        else
+          format_params(params, rest, acc)
+        end
+
+      value ->
+        with {:ok, formatted_value} <- format_param(value, {type, name}) do
+          format_params(params, rest, [formatted_value | acc])
+        end
+    end
   end
 
-  defp format_param(value, {:string, name}), do: "<#{name}>#{value}</#{name}>"
-  defp format_param(value, {:float, name}), do: "<#{name}>#{value}</#{name}>"
-  # TODO: error cases
+  defp format_param(nil, _), do: {:ok, nil}
+
+  defp format_param(value, {type, name}) when type in [:string, :float, :boolean],
+    do: {:ok, "<#{name}>#{value}</#{name}>"}
+
+  defp format_param(_, {type, name}), do: {:error, {:invalid_param_type, type, name}}
 
   defp build_key(timestamp, request, params, opts) do
     with {:ok, eat} <- get_eat(params, request, opts[:eat]) do
@@ -141,17 +156,20 @@ defmodule Tipalti.API do
       nil ->
         {:error, {:eat_field_definition_missing, field}}
 
-      {type, _name} ->
+      {_required?, type, _name} ->
         case params[field] do
           nil ->
             {:error, {:eat_value_missing, field}}
 
           eat_value ->
-            {:ok, format_eat(type, eat_value)}
+            with {:ok, formatted_eat} <- format_eat(type, eat_value) do
+              {:ok, formatted_eat}
+            end
         end
     end
   end
 
-  defp format_eat(:string, string), do: string
-  defp format_eat(:float, float), do: float |> trunc() |> to_string()
+  defp format_eat(:string, string) when is_binary(string), do: {:ok, string}
+  defp format_eat(:float, float) when is_float(float) or is_integer(float), do: {:ok, float |> trunc() |> to_string()}
+  defp format_eat(type, value), do: {:error, {:invalid_eat_value, type, value}}
 end

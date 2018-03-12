@@ -9,7 +9,7 @@ defmodule Tipalti.API.Payee do
   @get_payee_details %{
     name: "GetPayeeDetails",
     request: %{
-      idap: {:string, "idap"}
+      idap: {:required, :string, "idap"}
     },
     response: %{
       name: {:string, "Name"},
@@ -21,10 +21,10 @@ defmodule Tipalti.API.Payee do
   def get_payee_details(idap), do: run(@url, @get_payee_details, %{idap: idap}, idap: idap)
 
   @payee_payable %{
-    name: "GetPayeeDetails",
+    name: "PayeePayable",
     request: %{
-      idap: {:string, "idap"},
-      amount: {:float, "amount"}
+      idap: {:required, :string, "idap"},
+      amount: {:required, :float, "amount"}
     },
     response: %{
       reason: {:string, "s"},
@@ -37,7 +37,7 @@ defmodule Tipalti.API.Payee do
   @payee_payment_method %{
     name: "PayeePaymentMethod",
     request: %{
-      idap: {:string, "idap"}
+      idap: {:required, :string, "idap"}
     },
     response: %{
       payment_method: {:string, "s"}
