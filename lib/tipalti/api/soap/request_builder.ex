@@ -4,8 +4,8 @@ defmodule Tipalti.API.SOAP.RequestBuilder do
 
   def build(root_name, children, key_parts) do
     now = timestamp()
-    key = build_key_new(now, key_parts)
-    children = [{:payerName, payer()}, {:timestamp, now}, {:key, key} | children]
+    key = build_key(now, key_parts)
+    children = filter_nils([{:payerName, payer()}, {:timestamp, now}, {:key, key} | children])
 
     doc =
       document(
@@ -21,7 +21,7 @@ defmodule Tipalti.API.SOAP.RequestBuilder do
     generate(doc)
   end
 
-  defp build_key_new(timestamp, key_parts) do
+  defp build_key(timestamp, key_parts) do
     key_parts
     |> Enum.map(&build_key_part(&1, timestamp))
     |> Enum.join()
@@ -42,4 +42,18 @@ defmodule Tipalti.API.SOAP.RequestBuilder do
   defp format_eat(:string, string) when is_binary(string), do: {:ok, string}
   defp format_eat(:float, float) when is_float(float) or is_integer(float), do: {:ok, float |> trunc() |> to_string()}
   defp format_eat(type, value), do: {:error, {:invalid_eat_value, type, value}}
+
+  defp filter_nils(elements) do
+    elements
+    |> Enum.reduce([], &do_filter_nils/2)
+    |> Enum.reverse()
+  end
+
+  defp do_filter_nils({_, nil}, acc), do: acc
+
+  defp do_filter_nils({key, children}, acc) when is_list(children) do
+    [{key, children |> Enum.reduce([], &do_filter_nils/2) |> Enum.reverse()} | acc]
+  end
+
+  defp do_filter_nils(el, acc), do: [el | acc]
 end
