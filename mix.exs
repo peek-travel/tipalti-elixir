@@ -22,7 +22,8 @@ defmodule Tipalti.MixProject do
   defp deps do
     [
       {:tesla, "~> 0.10"},
-      {:hackney, "~> 1.11"}
+      {:hackney, "~> 1.11"},
+      {:sweet_xml, "~> 0.6"}
     ]
   end
 end
