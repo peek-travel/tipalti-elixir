@@ -3,6 +3,12 @@ defmodule Tipalti.API.SOAP.ResponseParser do
 
   @error_paths [error_code: ~x"./errorCode/text()"s, error_message: ~x"./errorMessage/text()"s]
 
+  def parse(body, root_path, :empty) do
+    with :ok <- is_ok?(body, root_path) do
+      {:ok, :ok}
+    end
+  end
+
   def parse(body, root_path, paths) do
     document = xpath(body, ~x"/"e)
 

@@ -21,9 +21,10 @@ defmodule Tipalti.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:tesla, "~> 0.10"},
       {:hackney, "~> 1.11"},
-      {:sweet_xml, "~> 0.6"}
+      {:sweet_xml, "~> 0.6"},
+      {:tesla, "~> 0.10"},
+      {:xml_builder, "~> 2.1"}
     ]
   end
 end
