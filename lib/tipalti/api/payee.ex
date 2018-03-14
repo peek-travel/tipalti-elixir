@@ -53,7 +53,6 @@ defmodule Tipalti.API.Payee do
           skipNulls: skip_nulls,
           overridePayableCountry: override_payable_country,
           item: [
-            Idap: params[:idap] || idap,
             FirstName: params[:first_name],
             LastName: params[:last_name],
             Street1: params[:street1],
