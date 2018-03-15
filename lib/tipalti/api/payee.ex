@@ -7,27 +7,21 @@ defmodule Tipalti.API.Payee do
     production: "https://api.tipalti.com/v6/PayeeFunctions.asmx"
   }
 
-  # TODO: CreatePayeeInfoAutoIdap
-
-  def payee_payable(idap, amount \\ 100.0) do
-    run(
-      "PayeePayable",
-      [idap: idap, amount: amount],
-      [:payer_name, idap, :timestamp, {:float, amount}],
-      {~x"//PayeePayableResult", reason: ~x"./s/text()"os, payable: ~x"./b/text()"b}
-    )
-  end
-
   # TODO: CancelInvoice
 
-  def payee_payment_method(idap) do
-    run(
-      "PayeePaymentMethod",
-      [idap: idap],
-      [:payer_name, idap, :timestamp],
-      {~x"//PayeePaymentMethodResult", payment_method: ~x"./s/text()"s}
-    )
-  end
+  # TODO: ClosePayeeAccount
+
+  # TODO: CreatePayeeInfoAutoIdap
+
+  # TODO: GetExtendedPayeeDetails
+
+  # TODO: GetExtendedPayeeDetailsList
+
+  # TODO: GetExtendedPODetails
+
+  # TODO: GetExtendedPODetailsList
+
+  # TODO: GetInvoicesPayableAmount
 
   def get_payee_details(idap) do
     run("GetPayeeDetails", [idap: idap], [:payer_name, idap, :timestamp], {
@@ -43,21 +37,39 @@ defmodule Tipalti.API.Payee do
     })
   end
 
-  # TODO: GetExtendedPayeeDetails
-
-  # TODO: GetExtendedPayeeDetailsList
-
-  # TODO: GetPayeesChangedSinceTimestamp
-
   # TODO: GetPayeeInvoiceList
 
   # TODO: GetPayeeInvoicesChangedSinceTimestamp
 
+  # TODO: GetPayeePendingInvoiceTotal
+
+  # TODO: GetPayeesChangedSinceTimestamp
+
   # TODO: GetPODetails
 
-  # TODO: GetExtendedPODetails
+  def payee_payable(idap, amount \\ 100.0) do
+    run(
+      "PayeePayable",
+      [idap: idap, amount: amount],
+      [:payer_name, idap, :timestamp, {:float, amount}],
+      {~x"//PayeePayableResult", reason: ~x"./s/text()"os, payable: ~x"./b/text()"b}
+    )
+  end
 
-  # TODO: GetExtendedPODetailsList
+  def payee_payment_method(idap) do
+    run(
+      "PayeePaymentMethod",
+      [idap: idap],
+      [:payer_name, idap, :timestamp],
+      {~x"//PayeePaymentMethodResult", payment_method: ~x"./s/text()"s}
+    )
+  end
+
+  # TODO: PayeeStatusUpdate
+
+  # TODO: PayeeUpdateAddress
+
+  # TODO: PayeeUpdateEmail
 
   # TODO: PaymentsBetweenDates
 
@@ -92,12 +104,6 @@ defmodule Tipalti.API.Payee do
       )
     end
   end
-
-  # TODO: PayeeUpdateAddress
-
-  # TODO: PayeeUpdateEmail
-
-  # TODO: PayeeStatusUpdate
 
   # TODO: UpdatePayeeCustomFields
 
