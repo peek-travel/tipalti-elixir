@@ -2,9 +2,10 @@ defmodule Tipalti.API.Payee do
   alias Tipalti.API.SOAP.Client
   import SweetXml, only: [sigil_x: 2]
 
+  @version "v7"
   @url %{
-    sandbox: "https://api.sandbox.tipalti.com/v6/PayeeFunctions.asmx",
-    production: "https://api.tipalti.com/v6/PayeeFunctions.asmx"
+    sandbox: "https://api.sandbox.tipalti.com/#{@version}/PayeeFunctions.asmx",
+    production: "https://api.tipalti.com/#{@version}/PayeeFunctions.asmx"
   }
 
   # TODO: CancelInvoice
