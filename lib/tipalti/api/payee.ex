@@ -41,8 +41,6 @@ defmodule Tipalti.API.Payee do
     )
   end
 
-  # TODO: build params checker
-
   def update_or_create_payee_info(idap, params, opts) do
     with {:ok, skip_nulls} <- get_required_opt(opts, :skip_nulls),
          {:ok, override_payable_country} <- get_required_opt(opts, :override_payable_country) do
