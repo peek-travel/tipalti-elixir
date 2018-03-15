@@ -1,5 +1,5 @@
 defmodule Tipalti.API.Payee do
-  import Tipalti.API.SOAP.Client
+  alias Tipalti.API.SOAP.Client
   import SweetXml, only: [sigil_x: 2]
 
   @url %{
@@ -7,8 +7,30 @@ defmodule Tipalti.API.Payee do
     production: "https://api.tipalti.com/v6/PayeeFunctions.asmx"
   }
 
+  # TODO: CreatePayeeInfoAutoIdap
+
+  def payee_payable(idap, amount \\ 100.0) do
+    run(
+      "PayeePayable",
+      [idap: idap, amount: amount],
+      [:payer_name, idap, :timestamp, {:float, amount}],
+      {~x"//PayeePayableResult", reason: ~x"./s/text()"os, payable: ~x"./b/text()"b}
+    )
+  end
+
+  # TODO: CancelInvoice
+
+  def payee_payment_method(idap) do
+    run(
+      "PayeePaymentMethod",
+      [idap: idap],
+      [:payer_name, idap, :timestamp],
+      {~x"//PayeePaymentMethodResult", payment_method: ~x"./s/text()"s}
+    )
+  end
+
   def get_payee_details(idap) do
-    run(@url, "GetPayeeDetails", [idap: idap], [:payer_name, idap, :timestamp], {
+    run("GetPayeeDetails", [idap: idap], [:payer_name, idap, :timestamp], {
       ~x"//GetPayeeDetailsResult",
       name: ~x"./Name/text()"os,
       company_name: ~x"./CompanyName/text()"os,
@@ -21,31 +43,28 @@ defmodule Tipalti.API.Payee do
     })
   end
 
-  def payee_payable(idap, amount \\ 100.0) do
-    run(
-      @url,
-      "PayeePayable",
-      [idap: idap, amount: amount],
-      [:payer_name, idap, :timestamp, {:float, amount}],
-      {~x"//PayeePayableResult", reason: ~x"./s/text()"os, payable: ~x"./b/text()"b}
-    )
-  end
+  # TODO: GetExtendedPayeeDetails
 
-  def payee_payment_method(idap) do
-    run(
-      @url,
-      "PayeePaymentMethod",
-      [idap: idap],
-      [:payer_name, idap, :timestamp],
-      {~x"//PayeePaymentMethodResult", payment_method: ~x"./s/text()"s}
-    )
-  end
+  # TODO: GetExtendedPayeeDetailsList
+
+  # TODO: GetPayeesChangedSinceTimestamp
+
+  # TODO: GetPayeeInvoiceList
+
+  # TODO: GetPayeeInvoicesChangedSinceTimestamp
+
+  # TODO: GetPODetails
+
+  # TODO: GetExtendedPODetails
+
+  # TODO: GetExtendedPODetailsList
+
+  # TODO: PaymentsBetweenDates
 
   def update_or_create_payee_info(idap, params, opts) do
     with {:ok, skip_nulls} <- get_required_opt(opts, :skip_nulls),
          {:ok, override_payable_country} <- get_required_opt(opts, :override_payable_country) do
       run(
-        @url,
         "UpdateOrCreatePayeeInfo",
         [
           idap: idap,
@@ -73,6 +92,17 @@ defmodule Tipalti.API.Payee do
       )
     end
   end
+
+  # TODO: PayeeUpdateAddress
+
+  # TODO: PayeeUpdateEmail
+
+  # TODO: PayeeStatusUpdate
+
+  # TODO: UpdatePayeeCustomFields
+
+  defp run(function_name, request, key_parts, response_paths),
+    do: Client.run(@url, function_name, request, key_parts, response_paths)
 
   defp get_required_opt(opts, key) do
     case Keyword.fetch(opts, key) do
