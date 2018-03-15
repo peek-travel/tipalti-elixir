@@ -22,7 +22,7 @@ defmodule Tipalti.MixProject do
   defp deps do
     [
       {:hackney, "~> 1.11"},
-      {:sweet_xml, "~> 0.6"},
+      {:sweet_xml, github: "peek-travel/sweet_xml"},
       {:tesla, "~> 0.10"},
       {:xml_builder, "~> 2.1"}
     ]

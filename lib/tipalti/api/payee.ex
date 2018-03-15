@@ -27,8 +27,7 @@ defmodule Tipalti.API.Payee do
       "PayeePayable",
       [idap: idap, amount: amount],
       [:payer_name, idap, :timestamp, {:float, amount}],
-      # TODO: payable is a boolean; fix sweet_xml
-      {~x"//PayeePayableResult", reason: ~x"./s/text()"os, payable: ~x"./b/text()"s}
+      {~x"//PayeePayableResult", reason: ~x"./s/text()"os, payable: ~x"./b/text()"b}
     )
   end
 
