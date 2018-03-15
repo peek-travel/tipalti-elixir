@@ -27,7 +27,7 @@ defmodule Tipalti.API.Payee do
       "PayeePayable",
       [idap: idap, amount: amount],
       [:payer_name, idap, :timestamp, {:float, amount}],
-      # TODO: payable is a boolean
+      # TODO: payable is a boolean; fix sweet_xml
       {~x"//PayeePayableResult", reason: ~x"./s/text()"os, payable: ~x"./b/text()"s}
     )
   end
@@ -41,6 +41,8 @@ defmodule Tipalti.API.Payee do
       {~x"//PayeePaymentMethodResult", payment_method: ~x"./s/text()"s}
     )
   end
+
+  # TODO: build params checker
 
   def update_or_create_payee_info(idap, params, opts) do
     with {:ok, skip_nulls} <- get_required_opt(opts, :skip_nulls),

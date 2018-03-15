@@ -10,7 +10,6 @@ defmodule Tipalti.API.SOAP.Client do
   plug Tesla.Middleware.Headers, %{"Content-Type" => "application/soap+xml; charset=utf-8"}
 
   def run(base_urls, function_name, request, key_parts, response_paths) do
-    # TODO: add back with {:ok, payload} <- ...
     payload = RequestBuilder.build(function_name, request, key_parts)
 
     base_urls[mode()]

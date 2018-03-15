@@ -2,10 +2,10 @@ defmodule Tipalti.API.SOAP.RequestBuilder do
   import Tipalti.Config
   import XmlBuilder
 
-  def build(root_name, children, key_parts) do
+  def build(function_name, params, key_parts) do
     now = timestamp()
     key = build_key(now, key_parts)
-    children = filter_nils([{:payerName, payer()}, {:timestamp, now}, {:key, key} | children])
+    params = filter_nils([{:payerName, payer()}, {:timestamp, now}, {:key, key} | params])
 
     doc =
       document(
@@ -15,7 +15,7 @@ defmodule Tipalti.API.SOAP.RequestBuilder do
           "xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
           "xmlns:soap12": "http://www.w3.org/2003/05/soap-envelope"
         },
-        [element("soap12:Body", [element(root_name, %{xmlns: "http://Tipalti.org/"}, children)])]
+        [element("soap12:Body", [element(function_name, %{xmlns: "http://Tipalti.org/"}, params)])]
       )
 
     generate(doc)
@@ -31,17 +31,11 @@ defmodule Tipalti.API.SOAP.RequestBuilder do
   defp build_key_part(:payer_name, _), do: payer()
   defp build_key_part(:timestamp, timestamp), do: timestamp
 
-  defp build_key_part({type, value}, _) do
-    # TODO: fix this
-    {:ok, part} = format_eat(type, value)
-    part
-  end
+  defp build_key_part({type, value}, _), do: format_eat(type, value)
 
   defp build_key_part(value, _), do: value
 
-  defp format_eat(:string, string) when is_binary(string), do: {:ok, string}
-  defp format_eat(:float, float) when is_float(float) or is_integer(float), do: {:ok, float |> trunc() |> to_string()}
-  defp format_eat(type, value), do: {:error, {:invalid_eat_value, type, value}}
+  defp format_eat(:float, float) when is_float(float) or is_integer(float), do: float |> trunc() |> to_string()
 
   defp filter_nils(elements) do
     elements
@@ -51,8 +45,8 @@ defmodule Tipalti.API.SOAP.RequestBuilder do
 
   defp do_filter_nils({_, nil}, acc), do: acc
 
-  defp do_filter_nils({key, children}, acc) when is_list(children) do
-    [{key, children |> Enum.reduce([], &do_filter_nils/2) |> Enum.reverse()} | acc]
+  defp do_filter_nils({key, params}, acc) when is_list(params) do
+    [{key, params |> Enum.reduce([], &do_filter_nils/2) |> Enum.reverse()} | acc]
   end
 
   defp do_filter_nils(el, acc), do: [el | acc]
