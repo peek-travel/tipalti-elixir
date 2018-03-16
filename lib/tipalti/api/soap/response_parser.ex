@@ -1,25 +1,26 @@
 defmodule Tipalti.API.SOAP.ResponseParser do
   import SweetXml
 
-  @error_paths [error_code: ~x"./errorCode/text()"s, error_message: ~x"./errorMessage/text()"s]
-
-  def parse(body, root_path, :empty) do
-    with :ok <- is_ok?(body, root_path) do
+  def parse(body, root_path, :empty, response_opts) do
+    with :ok <- is_ok?(body, root_path, response_opts) do
       {:ok, :ok}
     end
   end
 
-  def parse(body, root_path, paths) do
+  def parse(body, root_path, paths, response_opts) do
     document = xpath(body, ~x"/"e)
 
-    with :ok <- is_ok?(document, root_path) do
+    with :ok <- is_ok?(document, root_path, response_opts) do
       {:ok, xpath(document, root_path, paths)}
     end
   end
 
-  defp is_ok?(document, root_path) do
-    case xpath(document, root_path, @error_paths) do
-      %{error_code: "OK"} ->
+  defp is_ok?(document, root_path, response_opts) do
+    ok_code = response_opts[:ok_code]
+    error_paths = response_opts[:error_paths]
+
+    case xpath(document, root_path, error_paths) do
+      %{error_code: ^ok_code} ->
         :ok
 
       error ->

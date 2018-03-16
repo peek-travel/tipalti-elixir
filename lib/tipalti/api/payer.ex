@@ -3,10 +3,16 @@ defmodule Tipalti.API.Payer do
   import SweetXml, only: [sigil_x: 2]
 
   @version "v7"
-  @url %{
-    sandbox: "https://api.sandbox.tipalti.com/#{@version}/PayerFunctions.asmx",
-    production: "https://api.tipalti.com/#{@version}/PayerFunctions.asmx"
-  }
+
+  use Tipalti.API,
+    url: [
+      sandbox: "https://api.sandbox.tipalti.com/#{@version}/PayerFunctions.asmx",
+      production: "https://api.tipalti.com/#{@version}/PayerFunctions.asmx"
+    ],
+    standard_response: [
+      ok_code: 0,
+      error_paths: [error_code: ~x"./errorCode/text()"i, error_message: ~x"./errorMessage/text()"os]
+    ]
 
   # TODO: ApplyVendorCredit
 
@@ -26,7 +32,18 @@ defmodule Tipalti.API.Payer do
 
   # TODO: CreatePaymentOrdersReport
 
-  # TODO: GetBalances
+  def get_balances() do
+    run("GetBalances", [], [:payer_name, :timestamp], {
+      ~x"//GetBalancesResult",
+      account_infos: [
+        ~x"./AccountInfos/TipaltiAccountInfo"l,
+        provider: ~x"./Provider/text()"os,
+        account_identifier: ~x"./AccountIdentifier/text()"os,
+        balance: ~x"./Balance/text()"os,
+        currency: ~x"./Currency/text()"os
+      ]
+    })
+  end
 
   # TODO: GetCustomFields
 
@@ -71,17 +88,4 @@ defmodule Tipalti.API.Payer do
   # TODO: TestPayments
 
   # TODO: TestPaymentsAsync
-
-  defp run(function_name, request, key_parts, response_paths),
-    do: Client.run(@url, function_name, request, key_parts, response_paths)
-
-  defp get_required_opt(opts, key) do
-    case Keyword.fetch(opts, key) do
-      {:ok, value} ->
-        {:ok, value}
-
-      :error ->
-        {:error, {:missing_required_option, key}}
-    end
-  end
 end

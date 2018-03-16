@@ -1,12 +1,17 @@
 defmodule Tipalti.API.Payee do
-  alias Tipalti.API.SOAP.Client
   import SweetXml, only: [sigil_x: 2]
 
   @version "v7"
-  @url %{
-    sandbox: "https://api.sandbox.tipalti.com/#{@version}/PayeeFunctions.asmx",
-    production: "https://api.tipalti.com/#{@version}/PayeeFunctions.asmx"
-  }
+
+  use Tipalti.API,
+    url: [
+      sandbox: "https://api.sandbox.tipalti.com/#{@version}/PayeeFunctions.asmx",
+      production: "https://api.tipalti.com/#{@version}/PayeeFunctions.asmx"
+    ],
+    standard_response: [
+      ok_code: "OK",
+      error_paths: [error_code: ~x"./errorCode/text()"s, error_message: ~x"./errorMessage/text()"os]
+    ]
 
   # TODO: CancelInvoice
 
@@ -107,17 +112,4 @@ defmodule Tipalti.API.Payee do
   end
 
   # TODO: UpdatePayeeCustomFields
-
-  defp run(function_name, request, key_parts, response_paths),
-    do: Client.run(@url, function_name, request, key_parts, response_paths)
-
-  defp get_required_opt(opts, key) do
-    case Keyword.fetch(opts, key) do
-      {:ok, value} ->
-        {:ok, value}
-
-      :error ->
-        {:error, {:missing_required_option, key}}
-    end
-  end
 end

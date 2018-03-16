@@ -3,22 +3,17 @@ defmodule Tipalti.API.SOAP.Client do
 
   import Tipalti.Config
 
-  alias Tipalti.API.SOAP.{ResponseParser, RequestBuilder}
-
   adapter :hackney
 
   plug Tesla.Middleware.Headers, %{"Content-Type" => "application/soap+xml; charset=utf-8"}
 
-  def run(base_urls, function_name, request, key_parts, response_paths) do
-    payload = RequestBuilder.build(function_name, request, key_parts)
-
+  def send(base_urls, payload) do
     base_urls[mode()]
     |> post(payload)
-    |> parse_response(response_paths)
+    |> parse_response()
   end
 
-  defp parse_response(%Tesla.Env{status: 200, body: body}, {root_path, paths}),
-    do: ResponseParser.parse(body, root_path, paths)
+  defp parse_response(%Tesla.Env{status: 200, body: body}), do: {:ok, body}
 
-  defp parse_response(%Tesla.Env{status: status}, _), do: {:error, {:bad_http_response, status}}
+  defp parse_response(%Tesla.Env{status: status}), do: {:error, {:bad_http_response, status}}
 end
