@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap12:Envelope xmlns:soap12="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soap12:Body>
+    <GetBalances xmlns="http://Tipalti.org/">
+      <payerName>MyPayer</payerName>
+      <timestamp>1521234048</timestamp>
+      <key>bbffdacec3452b3ea2a23302589166c3fdee0224c5c07dd66b04a357d8bc1162</key>
+    </GetBalances>
+  </soap12:Body>
+</soap12:Envelope>

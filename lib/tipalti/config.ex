@@ -1,24 +1,17 @@
 defmodule Tipalti.Config do
   @moduledoc false
 
-  @doc false
-  @spec payer() :: String.t() | nil
+  alias Tipalti.SystemTime
+
   def payer, do: get_env(:payer)
 
-  @doc false
-  @spec mode() :: atom() | nil
   def mode, do: get_env_atom(:mode, :sandbox)
 
-  @doc false
-  @spec master_key() :: String.t() | nil
   def master_key, do: get_env(:master_key)
 
-  @doc false
-  @spec build_hashkey(String.t()) :: String.t()
   def build_hashkey(string), do: :sha256 |> :crypto.hmac(master_key(), string) |> Base.encode16(case: :lower)
 
-  @doc false
-  def timestamp, do: DateTime.utc_now() |> DateTime.to_unix()
+  def timestamp, do: Application.get_env(:tipalti, :system_time_module, SystemTime).timestamp()
 
   defp get_env_atom(key, default) do
     case get_env(key, default) do

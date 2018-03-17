@@ -1,4 +1,6 @@
 defmodule Tipalti.API.SOAP.RequestBuilder do
+  @moduledoc false
+
   import Tipalti.Config
   import XmlBuilder
 

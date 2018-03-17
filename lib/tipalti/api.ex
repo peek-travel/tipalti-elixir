@@ -1,13 +1,16 @@
 defmodule Tipalti.API do
+  @moduledoc false
+
   defmacro __using__(opts) do
     quote do
       alias Tipalti.API.SOAP.{Client, RequestBuilder, ResponseParser}
       import Tipalti.API
 
-      def run(function_name, request, key_parts, {root_path, paths}) do
+      defp run(function_name, request, key_parts, {root_path, paths}) do
         payload = RequestBuilder.build(function_name, request, key_parts)
+        client = Application.get_env(:tipalti, :api_client_module, Client)
 
-        with {:ok, body} <- Client.send(unquote(opts)[:url], payload) do
+        with {:ok, body} <- client.send(unquote(opts)[:url], payload) do
           ResponseParser.parse(body, root_path, paths, unquote(opts)[:standard_response])
         end
       end

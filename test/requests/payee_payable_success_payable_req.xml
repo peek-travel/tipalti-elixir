@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap12:Envelope xmlns:soap12="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soap12:Body>
+    <PayeePayable xmlns="http://Tipalti.org/">
+      <payerName>MyPayer</payerName>
+      <timestamp>1521234048</timestamp>
+      <key>1efa18c5e583e471d45088eef6048ce137f2a204c65c3fc9d92ce7d876c63ada</key>
+      <idap>payablepayee</idap>
+      <amount>100</amount>
+    </PayeePayable>
+  </soap12:Body>
+</soap12:Envelope>

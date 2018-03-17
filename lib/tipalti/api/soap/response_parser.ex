@@ -1,4 +1,6 @@
 defmodule Tipalti.API.SOAP.ResponseParser do
+  @moduledoc false
+
   import SweetXml
 
   def parse(body, root_path, :empty, response_opts) do

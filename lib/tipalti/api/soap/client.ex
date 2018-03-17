@@ -1,4 +1,6 @@
 defmodule Tipalti.API.SOAP.Client do
+  @moduledoc false
+
   use Tesla
 
   import Tipalti.Config
