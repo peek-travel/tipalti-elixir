@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap12:Envelope xmlns:soap12="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soap12:Body>
+    <UpdateOrCreatePayeeInfo xmlns="http://Tipalti.org/">
+      <payerName>MyPayer</payerName>
+      <timestamp>1521234048</timestamp>
+      <key>167f1245e4bb9aa105748ce5cc58cb5f6b365aa69da70007a4de2fc36606c7de</key>
+      <idap>newpayee</idap>
+      <skipNulls>true</skipNulls>
+      <overridePayableCountry>false</overridePayableCountry>
+      <item>
+        <FirstName>John</FirstName>
+        <LastName>Smith</LastName>
+      </item>
+    </UpdateOrCreatePayeeInfo>
+  </soap12:Body>
+</soap12:Envelope>

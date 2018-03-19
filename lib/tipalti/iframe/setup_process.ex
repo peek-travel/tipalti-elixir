@@ -1,9 +1,9 @@
 defmodule Tipalti.IFrame.SetupProcess do
   @moduledoc """
-  Used to generate URLs to the Tipalti Setup Process iFrame.
+  Generate URLs for the Tipalti Setup Process iFrame.
   """
 
-  import Tipalti.Util
+  import Tipalti.IFrame, only: [build_url: 3]
 
   @type flaggable_fields ::
           :country
@@ -55,7 +55,7 @@ defmodule Tipalti.IFrame.SetupProcess do
     * `:read_only` - A list of fields you'd like to make read-only
   """
   @type t :: %__MODULE__{
-          idap: String.t(),
+          idap: Tipalti.idap(),
           country: String.t(),
           first: String.t(),
           middle: String.t(),
@@ -87,17 +87,36 @@ defmodule Tipalti.IFrame.SetupProcess do
             alias: nil,
             email: nil
 
-  @base_url %{
-    sandbox: "https://ui2.sandbox.tipalti.com/PayeeDashboard/Home?",
-    production: "https://ui2.tipalti.com/PayeeDashboard/Home?"
+  @url %{
+    sandbox: URI.parse("https://ui2.sandbox.tipalti.com/PayeeDashboard/Home"),
+    production: URI.parse("https://ui2.tipalti.com/PayeeDashboard/Home")
   }
 
   @doc """
   Generates a Setup Process iFrame URL for the given struct of parameters.
+
+  ## Examples
+
+      iex> params = %Tipalti.IFrame.SetupProcess{idap: "mypayee"}
+      ...> url(params)
+      %URI{
+        authority: "ui2.sandbox.tipalti.com",
+        fragment: nil,
+        host: "ui2.sandbox.tipalti.com",
+        path: "/PayeeDashboard/Home",
+        port: 443,
+        query: "idap=mypayee&payer=MyPayer&ts=1521234048&hashkey=9413b4db4c08519497b6c236861049793e8834ac4de5e3cd866b7fec96e54eaa",
+        scheme: "https",
+        userinfo: nil
+      }
+
+      iex> params = %Tipalti.IFrame.SetupProcess{idap: "mypayee"}
+      ...> url(params) |> URI.to_string()
+      "https://ui2.sandbox.tipalti.com/PayeeDashboard/Home?idap=mypayee&payer=MyPayer&ts=1521234048&hashkey=9413b4db4c08519497b6c236861049793e8834ac4de5e3cd866b7fec96e54eaa"
   """
-  @spec generate_url(t(), options) :: URI.t()
-  def generate_url(struct, opts \\ []) do
+  @spec url(t(), options()) :: URI.t()
+  def url(struct, opts \\ []) do
     params = Map.from_struct(struct)
-    build_url(@base_url, params, opts)
+    build_url(@url, params, opts)
   end
 end
