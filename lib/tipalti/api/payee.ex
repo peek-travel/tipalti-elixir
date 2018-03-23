@@ -78,7 +78,7 @@ defmodule Tipalti.API.Payee do
        payees: [
          ~x"./Payees/TipaltiExtendedPayeeDetailsResponse"l,
          properties: [
-           ~x"./Properties"l,
+           ~x"./Properties",
            idap: ~x"#{prop_getter.("Idap")}"os,
            alias: ~x"#{prop_getter.("Alias")}"os,
            company_name: ~x"#{prop_getter.("CompanyName")}"os,
