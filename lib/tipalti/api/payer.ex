@@ -2,13 +2,13 @@ defmodule Tipalti.API.Payer do
   @moduledoc """
   Payer functions.
 
-  Details are taken from: http://api.qa.payrad.com/v7/PayerFunctions.asmx
+  Details are taken from: https://api.tipalti.com/v5/PayerFunctions.asmx
   """
 
   alias Tipalti.API.SOAP.Client
   import SweetXml, only: [sigil_x: 2]
 
-  @version "v7"
+  @version "v5"
 
   use Tipalti.API,
     url: [

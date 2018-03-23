@@ -2,12 +2,12 @@ defmodule Tipalti.API.Payee do
   @moduledoc """
   Obtain or update payee info.
 
-  Details are taken from: http://api.qa.payrad.com/v7/PayeeFunctions.asmx
+  Details are taken from: https://api.tipalti.com/v6/PayeeFunctions.asmx
   """
 
   import SweetXml, only: [sigil_x: 2]
 
-  @version "v7"
+  @version "v6"
 
   use Tipalti.API,
     url: [
@@ -34,7 +34,86 @@ defmodule Tipalti.API.Payee do
 
   # TODO: GetExtendedPayeeDetails
 
-  # TODO: GetExtendedPayeeDetailsList
+  @doc """
+  Returns extended details and custom fields of given payees.
+
+  Included extended details are:
+  *   idap
+  *   alias
+  *   company_name
+  *   email
+  *   first_name
+  *   middle_name
+  *   last_name
+  *   payment_method
+  *   street1
+  *   street2
+  *   city
+  *   state
+  *   zip
+  *   country
+  *   phone
+  *   payment_currency
+  *   payable
+  *   status
+  *   preferred_payer_entity
+  *   actual_payer_entity
+  *   tax_form_status
+  *   portal_user
+  *   withholding_rate
+  *   tax_form_entity_type
+  *   tax_form_entity_name
+  *   tax_form_type
+  """
+  @spec get_extended_payee_details_list([Tipalti.idap(), ...]) :: payee_response()
+  def get_extended_payee_details_list(idaps) do
+    prop_getter = fn key -> "./KeyValuePair/Key[text()='#{key}']/../Value/text()" end
+    lower_cased = fn str -> "translate(#{str}, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')" end
+
+    run(
+      "GetExtendedPayeeDetailsList",
+      [idaps: Enum.map(idaps, fn idap -> [string: idap] end)],
+      [:payer_name, :timestamp],
+      {~x"//GetExtendedPayeeDetailsListResult",
+       payees: [
+         ~x"./Payees/TipaltiExtendedPayeeDetailsResponse"l,
+         properties: [
+           ~x"./Properties",
+           idap: ~x"#{prop_getter.("Idap")}"os,
+           alias: ~x"#{prop_getter.("Alias")}"os,
+           company_name: ~x"#{prop_getter.("CompanyName")}"os,
+           email: ~x"#{prop_getter.("Email")}"os,
+           first_name: ~x"#{prop_getter.("FirstName")}"os,
+           middle_name: ~x"#{prop_getter.("MiddleName")}"os,
+           last_name: ~x"#{prop_getter.("LastName")}"os,
+           payment_method: ~x"#{prop_getter.("PaymentMethod")}"os,
+           street1: ~x"#{prop_getter.("Street1")}"os,
+           street2: ~x"#{prop_getter.("Street2")}"os,
+           city: ~x"#{prop_getter.("City")}"os,
+           state: ~x"#{prop_getter.("State")}"os,
+           zip: ~x"#{prop_getter.("Zip")}"os,
+           country: ~x"#{prop_getter.("Country")}"os,
+           phone: ~x"#{prop_getter.("Phone")}"os,
+           payment_currency: ~x"#{prop_getter.("PaymentCurrency")}"os,
+           payable: ~x"#{lower_cased.(prop_getter.("Payable"))}"b,
+           status: ~x"#{prop_getter.("Status")}"os,
+           preferred_payer_entity: ~x"#{prop_getter.("PreferredPayerEntity")}"os,
+           actual_payer_entity: ~x"#{prop_getter.("ActualPayerEntity")}"os,
+           tax_form_status: ~x"#{prop_getter.("TaxFormStatus")}"os,
+           portal_user: ~x"#{prop_getter.("PortalUser")}"os,
+           withholding_rate: ~x"#{prop_getter.("WithholdingRate")}"os,
+           tax_form_entity_type: ~x"#{prop_getter.("TaxFormEntityType")}"os,
+           tax_form_entity_name: ~x"#{prop_getter.("TaxFormEntityName")}"os,
+           tax_form_type: ~x"#{prop_getter.("TaxFormType")}"os
+         ],
+         custom_fields: [
+           ~x"./CustomFields/KeyValuePair"l,
+           key: ~x"./Key/text()"os,
+           value: ~x"./Value/text()"os
+         ]
+       ]}
+    )
+  end
 
   # TODO: GetExtendedPODetails
 
