@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <PayeeStatusUpdateResponse xmlns="http://Tipalti.org/">
+      <PayeeStatusUpdateResult>
+        <errorMessage>OK</errorMessage>
+        <errorCode>OK</errorCode>
+        <b xsi:nil="true" />
+        <i xsi:nil="true" />
+        <d xsi:nil="true" />
+      </PayeeStatusUpdateResult>
+    </PayeeStatusUpdateResponse>
+  </soap:Body>
+</soap:Envelope>

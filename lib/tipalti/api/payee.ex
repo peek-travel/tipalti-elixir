@@ -229,7 +229,28 @@ defmodule Tipalti.API.Payee do
     )
   end
 
-  # TODO: PayeeStatusUpdate
+  @doc """
+  Update the status of payee.
+
+  Valid values for status are: `:active`, `:suspended`, or `:blocked`.
+  When blocking a payee, a blocking reason may be supplied
+
+  ## Examples
+
+        iex> payee_status_update("somepayee", :blocked, "Business closed")
+        {:ok, :ok}
+  """
+  @spec payee_status_update(Tipalti.idap(), :active | :suspended | :blocked, String.t() | nil) :: payee_response()
+  def payee_status_update(idap, status, reason \\ nil) do
+    status_string = status |> Atom.to_string() |> String.capitalize()
+
+    run(
+      "PayeeStatusUpdate",
+      [idap: idap, status: status_string, reason: reason],
+      [:payer_name, idap, :timestamp, status_string],
+      {~x"//PayeeStatusUpdateResult", :empty}
+    )
+  end
 
   # TODO: PayeeUpdateAddress
 
