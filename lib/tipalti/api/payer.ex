@@ -2,7 +2,7 @@ defmodule Tipalti.API.Payer do
   @moduledoc """
   Payer functions.
 
-  Details are taken from: https://api.tipalti.com/v5/PayerFunctions.asmx
+  Details are taken from: <https://api.tipalti.com/v5/PayerFunctions.asmx>
   """
 
   alias Tipalti.API.SOAP.Client
@@ -22,8 +22,6 @@ defmodule Tipalti.API.Payer do
 
   @typedoc """
   All Payer API responses are of this form.
-
-  Errors are not really standardized yet.
   """
   @type payer_response :: {:ok, map()} | {:error, any()}
 
@@ -53,7 +51,7 @@ defmodule Tipalti.API.Payer do
 
   ## Examples
 
-        iex> get_balances
+        iex> get_balances()
         {:ok,
           %{
             account_infos: [

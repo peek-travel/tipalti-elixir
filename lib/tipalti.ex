@@ -1,6 +1,14 @@
 defmodule Tipalti do
   @moduledoc """
   Tipalti integration library for Elixir.
+
+  This library contains the following:
+
+  *   `Tipalti.API.Payee` - Payee SOAP API client
+  *   `Tipalti.API.Payer` - Payer SOAP API client
+  *   `Tipalti.IFrame.InvoiceHistory` - Invoice History iFrame integration helper
+  *   `Tipalti.IFrame.PaymentsHistory` - Payments History iFrame integration helper
+  *   `Tipalti.IFrame.SetupProcess` - Setup Process iFrame integration helper
   """
 
   @typedoc """

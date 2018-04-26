@@ -2,7 +2,7 @@ defmodule Tipalti.API.Payee do
   @moduledoc """
   Obtain or update payee info.
 
-  Details are taken from: https://api.tipalti.com/v6/PayeeFunctions.asmx
+  Details are taken from: <https://api.tipalti.com/v6/PayeeFunctions.asmx>
   """
 
   import SweetXml, only: [sigil_x: 2]
@@ -21,8 +21,6 @@ defmodule Tipalti.API.Payee do
 
   @typedoc """
   All Payee API responses are of this form.
-
-  Errors are not really standardized yet.
   """
   @type payee_response :: {:ok, map() | :ok} | {:error, any()}
 
@@ -65,6 +63,7 @@ defmodule Tipalti.API.Payee do
   *   tax_form_entity_name
   *   tax_form_type
   """
+  # TODO: add doctests ^
   @spec get_extended_payee_details_list([Tipalti.idap(), ...]) :: payee_response()
   def get_extended_payee_details_list(idaps) do
     prop_getter = fn key -> "./KeyValuePair/Key[text()='#{key}']/../Value/text()" end
