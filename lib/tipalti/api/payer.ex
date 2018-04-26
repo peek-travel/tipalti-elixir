@@ -51,7 +51,7 @@ defmodule Tipalti.API.Payer do
 
   ## Examples
 
-        iex> get_balances
+        iex> get_balances()
         {:ok,
           %{
             account_infos: [
