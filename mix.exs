@@ -69,7 +69,6 @@ defmodule Tipalti.MixProject do
       {:excoveralls, "~> 0.7", only: :test},
       {:hackney, "~> 1.11"},
       {:inch_ex, ">= 0.0.0", only: :docs},
-      {:sweet_xml, github: "peek-travel/sweet_xml"},
       {:tesla, "~> 0.10"},
       {:xml_builder, "~> 2.1"}
     ]
