@@ -69,7 +69,7 @@ defmodule Tipalti.MixProject do
       {:excoveralls, "~> 0.7", only: :test},
       {:hackney, "~> 1.11"},
       {:inch_ex, ">= 0.0.0", only: :docs},
-      {:tesla, "1.0.0-beta.1"},
+      {:tesla, "~> 0.10"},
       {:xml_builder, "~> 2.1"}
     ]
   end
