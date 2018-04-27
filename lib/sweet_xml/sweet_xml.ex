@@ -1,9 +1,9 @@
 # NOTE: this has been yanked from https://github.com/peek-travel/sweet_xml
 # because the maintainers of the library have gone MIA and are not merging PRs
 defmodule SweetXpath do
+  @moduledoc false
   defmodule Priv do
     @moduledoc false
-    @doc false
     def self_val(val), do: val
   end
 
@@ -18,103 +18,7 @@ defmodule SweetXpath do
 end
 
 defmodule SweetXml do
-  @moduledoc ~S"""
-  `SweetXml` is a thin wrapper around `:xmerl`. It allows you to convert a
-  string or xmlElement record as defined in `:xmerl` to an elixir value such
-  as `map`, `list`, `char_list`, or any combination of these.
-
-  For normal sized documents, `SweetXml` primarily exposes 3 functions
-
-    * `SweetXml.xpath/2` - return a value based on the xpath expression
-    * `SweetXml.xpath/3` - similar to above but allowing nesting of mapping
-    * `SweetXml.xmap/2` - return a map with keywords mapped to values returned
-      from xpath
-
-  For something larger, `SweetXml` mainly exposes 1 function
-
-    * `SweetXml.stream_tags/3` - stream a given tag or a list of tags, and
-      optionally "discard" some dom elements in order to free memory during
-      streaming for big files which cannot fit entirely in memory
-
-  ## Examples
-
-  Simple Xpath
-
-      iex> import SweetXml
-      iex> doc = "<h1><a>Some linked title</a></h1>"
-      iex> doc |> xpath(~x"//a/text()")
-      'Some linked title'
-
-  Nested Mapping
-
-      iex> import SweetXml
-      iex> doc = "<body><header><p>Message</p><ul><li>One</li><li><a>Two</a></li></ul></header></body>"
-      iex> doc |> xpath(~x"//header", message: ~x"./p/text()", a_in_li: ~x".//li/a/text()"l)
-      %{a_in_li: ['Two'], message: 'Message'}
-
-  Streaming
-
-      iex> import SweetXml
-      iex> doc = ["<ul><li>l1</li><li>l2", "</li><li>l3</li></ul>"]
-      iex> SweetXml.stream_tags(doc, :li)
-      ...> |> Stream.map(fn {:li, doc} ->
-      ...>      doc |> SweetXml.xpath(~x"./text()")
-      ...>    end)
-      ...> |> Enum.to_list
-      ['l1', 'l2', 'l3']
-
-  For more examples please see help for each individual functions
-
-  ## The ~x Sigil
-
-  Notice in the above examples, we used the expression `~x"//a/text()"` to
-  define the path. The reason is it allows us to more precisely specify what
-  is being returned.
-
-    * `~x"//some/path"`
-
-      without any modifiers, `xpath/2` will return the value of the entity if
-      the entity is of type `xmlText`, `xmlAttribute`, `xmlPI`, `xmlComment`
-      as defined in `:xmerl`
-
-    * `~x"//some/path"e`
-
-      `e` stands for (e)ntity. This forces `xpath/2` to return the entity with
-      which you can further chain your `xpath/2` call
-
-    * `~x"//some/path"l`
-
-      'l' stands for (l)ist. This forces `xpath/2` to return a list. Without
-      `l`, `xpath/2` will only return the first element of the match
-
-    * `~x"//some/path"el` - mix of the above
-
-    * `~x"//some/path"k`
-
-      'k' stands for (K)eyword. This forces `xpath/2` to return a Keyword instead of a Map.
-
-    * `~x"//some/path"s`
-
-      's' stands for (s)tring. This forces `xpath/2` to return the value as
-      string instead of a char list.
-
-    * `x"//some/path"o`
-
-      'o' stands for (O)ptional. This allows the path to not exist, and will return nil.
-
-    * `~x"//some/path"sl` - string list.
-
-  Notice also in the examples section, we always import SweetXml first. This
-  makes `x_sigil` available in the current scope. Without it, instead of using
-  `~x`, you can do the following
-
-      iex> doc = "<h1><a>Some linked title</a></h1>"
-      iex> doc |> SweetXml.xpath(%SweetXpath{path: '//a/text()', is_value: true, cast_to: false, is_list: false, is_keyword: false})
-      'Some linked title'
-
-  Note the use of char_list in the path definition.
-  """
-
+  @moduledoc false
   import Record, only: [defrecord: 2, extract: 2]
 
   @xmerl "xmerl/include/xmerl.hrl"
@@ -130,66 +34,6 @@ defmodule SweetXml do
   defrecord :xmlDocument, extract(:xmlDocument, from_lib: @xmerl)
   defrecord :xmlObj, extract(:xmlObj, from_lib: @xmerl)
 
-  @doc ~s"""
-  `sigil_x/2` simply returns a `SweetXpath` struct, with modifiers converted to
-  boolean fields
-
-      iex> SweetXml.sigil_x("//some/path", 'e')
-      %SweetXpath{path: '//some/path', is_value: false, cast_to: false, is_list: false, is_keyword: false}
-
-  or you can simply import and use the `~x` expression
-
-      iex> import SweetXml
-      iex> ~x"//some/path"e
-      %SweetXpath{path: '//some/path', is_value: false, cast_to: false, is_list: false, is_keyword: false}
-
-  Valid modifiers are `e`, `s`, `l` and `k`. Below is the full explanation
-
-    * `~x"//some/path"`
-
-      without any modifiers, `xpath/2` will return the value of the entity if
-      the entity is of type `xmlText`, `xmlAttribute`, `xmlPI`, `xmlComment`
-      as defined in `:xmerl`
-
-    * `~x"//some/path"e`
-
-      `e` stands for (e)ntity. This forces `xpath/2` to return the entity with
-      which you can further chain your `xpath/2` call
-
-    * `~x"//some/path"l`
-
-      'l' stands for (l)ist. This forces `xpath/2` to return a list. Without
-      `l`, `xpath/2` will only return the first element of the match
-
-    * `~x"//some/path"el` - mix of the above
-
-    * `~x"//some/path"k`
-
-      'k' stands for (K)eyword. This forces `xpath/2` to return a Keyword instead of a Map.
-
-    * `~x"//some/path"s`
-
-      's' stands for (s)tring. This forces `xpath/2` to return the value as
-      string instead of a char list.
-
-    * `x"//some/path"o`
-
-      'o' stands for (O)ptional. This allows the path to not exist, and will return nil.
-
-    * `~x"//some/path"sl` - string list.
-
-    * `~x"//some/path"i`
-
-      'i' stands for (i)nteger. This forces `xpath/2` to return the value as
-      integer instead of a char list.
-
-    * `~x"//some/path"f`
-
-      'f' stands for (f)loat. This forces `xpath/2` to return the value as
-      float instead of a char list.
-
-    * `~x"//some/path"il` - integer list
-  """
   def sigil_x(path, modifiers \\ '') do
     %SweetXpath{
       path: String.to_charlist(path),
@@ -221,20 +65,6 @@ defmodule SweetXml do
     }
   end
 
-  @doc """
-  `doc` can be
-
-  - a byte list (iodata)
-  - a binary
-  - any enumerable of binaries (for instance `File.stream!/3` result)
-
-  `options` are `xmerl` options described here [http://www.erlang.org/doc/man/xmerl_scan.html](http://www.erlang.org/doc/man/xmerl_scan.html),
-  see [the erlang tutorial](http://www.erlang.org/doc/apps/xmerl/xmerl_examples.html) for usage.
-
-  When `doc` is an enumerable, the `:cont_fun` option cannot be given.
-
-  Return an `xmlElement` record
-  """
   def parse(doc), do: parse(doc, [])
 
   def parse(doc, options) when is_binary(doc) do
@@ -251,52 +81,6 @@ defmodule SweetXml do
     parsed_doc
   end
 
-  @doc """
-  Most common usage of streaming: stream a given tag or a list of tags, and
-  optionally "discard" some dom elements in order to free memory during streaming
-  for big files which cannot fit entirely in memory.
-
-  Note that each matched tag produces it's own tree. If a given tag appears in
-  the discarded options, it is ignored.
-
-  - `doc` is an enumerable, data will be pulled during the result stream
-    enumeration. e.g. `File.stream!("some_file.xml")`
-  - `tags` is an atom or a list of atoms you want to extract. Each stream element
-    will be `{:tagname, xmlelem}`. e.g. :li, :header
-  - `options[:discard]` is the list of tag which will be discarded:
-     not added to its parent DOM.
-
-  Examples:
-
-      iex> import SweetXml
-      iex> doc = ["<ul><li>l1</li><li>l2", "</li><li>l3</li></ul>"]
-      iex> SweetXml.stream_tags(doc, :li, discard: [:li])
-      ...> |> Stream.map(fn {:li, doc} -> doc |> SweetXml.xpath(~x"./text()") end)
-      ...> |> Enum.to_list
-      ['l1', 'l2', 'l3']
-      iex> SweetXml.stream_tags(doc, [:ul, :li])
-      ...> |> Stream.map(fn {_, doc} -> doc |> SweetXml.xpath(~x"./text()") end)
-      ...> |> Enum.to_list
-      ['l1', 'l2', 'l3', nil]
-
-
-  Becareful if you set `options[:discard]`. If any of the discarded tags is nested
-  inside a kept tag, you will not be able to access them.
-
-  Examples:
-
-      iex> import SweetXml
-      iex> doc = ["<header>", "<title>XML</title", "><header><title>Nested</title></header></header>"]
-      iex> SweetXml.stream_tags(doc, :header)
-      ...> |> Stream.map(fn {_, doc} -> SweetXml.xpath(doc, ~x".//title/text()") end)
-      ...> |> Enum.to_list
-      ['Nested', 'XML']
-      iex> SweetXml.stream_tags(doc, :header, discard: [:title])
-      ...> |> Stream.map(fn {_, doc} -> SweetXml.xpath(doc, ~x"./title/text()") end)
-      ...> |> Enum.to_list
-      [nil, nil]
-
-  """
   def stream_tags(doc, tags, options \\ []) do
     tags = if is_atom(tags), do: [tags], else: tags
 
@@ -338,35 +122,6 @@ defmodule SweetXml do
     end)
   end
 
-  @doc """
-  Create an element stream from a xml `doc`.
-
-  This is a lower level API compared to `SweetXml.stream_tags`. You can use
-  the `options_callback` argument to get fine control of what data to be streamed.
-
-  - `doc` is an enumerable, data will be pulled during the result stream
-    enumeration. e.g. `File.stream!("some_file.xml")`
-  - `options_callback` is an anonymous function `fn emit -> xmerl_opts` use it to
-    define your :xmerl callbacks and put data into the stream using
-    `emit.(elem)` in the callbacks.
-
-  For example, here you define a stream of all `xmlElement` :
-
-      iex> import Record
-      iex> doc = ["<h1", "><a>Som", "e linked title</a><a>other</a></h1>"]
-      iex> SweetXml.stream(doc, fn emit ->
-      ...>   [
-      ...>     hook_fun: fn
-      ...>       entity, xstate when is_record(entity, :xmlElement)->
-      ...>         emit.(entity)
-      ...>         {entity, xstate}
-      ...>       entity, xstate ->
-      ...>         {entity,xstate}
-      ...>     end
-      ...>   ]
-      ...> end) |> Enum.count
-      3
-  """
   def stream(doc, options_callback) when is_binary(doc) do
     stream([doc], options_callback)
   end
@@ -408,45 +163,6 @@ defmodule SweetXml do
     )
   end
 
-  @doc ~S"""
-  `xpath` allows you to query an xml document with xpath.
-
-  The second argument to xpath is a `SweetXpath` struct. The optional third
-  argument is a keyword list, such that the value of each keyword is also
-  either a `SweetXpath` or a list with head being a `SweetXpath` and tail being
-  another keyword list exactly like before. Please see examples below for better
-  understanding.
-
-  ## Examples
-
-  Simple
-
-      iex> import SweetXml
-      iex> doc = "<h1><a>Some linked title</a></h1>"
-      iex> doc |> xpath(~x"//a/text()")
-      'Some linked title'
-
-  With optional mapping
-
-      iex> import SweetXml
-      iex> doc = "<body><header><p>Message</p><ul><li>One</li><li><a>Two</a></li></ul></header></body>"
-      iex> doc |> xpath(~x"//header", message: ~x"./p/text()", a_in_li: ~x".//li/a/text()"l)
-      %{a_in_li: ['Two'], message: 'Message'}
-
-  With optional mapping and nesting
-
-      iex> import SweetXml
-      iex> doc = "<body><header><p>Message</p><ul><li>One</li><li><a>Two</a></li></ul></header></body>"
-      iex> doc
-      ...> |> xpath(
-      ...>      ~x"//header",
-      ...>      ul: [
-      ...>        ~x"./ul",
-      ...>        a: ~x"./li/a/text()"
-      ...>      ]
-      ...>    )
-      %{ul: %{a: 'Two'}}
-  """
   def xpath(parent, spec) when not is_tuple(parent) do
     parent |> parse |> xpath(spec)
   end
@@ -504,60 +220,6 @@ defmodule SweetXml do
     end
   end
 
-  @doc ~S"""
-  `xmap` returns a mapping with each value being the result of `xpath`
-
-  Just as `xpath`, you can nest the mapping structure. Please see `xpath` for
-  more detail.
-
-  ## Examples
-
-  Simple
-
-      iex> import SweetXml
-      iex> doc = "<h1><a>Some linked title</a></h1>"
-      iex> doc |> xmap(a: ~x"//a/text()")
-      %{a: 'Some linked title'}
-
-  With optional mapping
-
-      iex> import SweetXml
-      iex> doc = "<body><header><p>Message</p><ul><li>One</li><li><a>Two</a></li></ul></header></body>"
-      iex> doc |> xmap(message: ~x"//p/text()", a_in_li: ~x".//li/a/text()"l)
-      %{a_in_li: ['Two'], message: 'Message'}
-
-  With optional mapping and nesting
-
-      iex> import SweetXml
-      iex> doc = "<body><header><p>Message</p><ul><li>One</li><li><a>Two</a></li></ul></header></body>"
-      iex> doc
-      ...> |> xmap(
-      ...>      message: ~x"//p/text()",
-      ...>      ul: [
-      ...>        ~x"//ul",
-      ...>        a: ~x"./li/a/text()"
-      ...>      ]
-      ...>    )
-      %{message: 'Message', ul: %{a: 'Two'}}
-      iex> doc
-      ...> |> xmap(
-      ...>      message: ~x"//p/text()",
-      ...>      ul: [
-      ...>        ~x"//ul"k,
-      ...>        a: ~x"./li/a/text()"
-      ...>      ]
-      ...>    )
-      %{message: 'Message', ul: [a: 'Two']}
-      iex> doc
-      ...> |> xmap([
-      ...>      message: ~x"//p/text()",
-      ...>      ul: [
-      ...>        ~x"//ul",
-      ...>        a: ~x"./li/a/text()"
-      ...>      ]
-      ...>    ], true)
-      [message: 'Message', ul: %{a: 'Two'}]
-  """
   def xmap(parent, mapping), do: xmap(parent, mapping, %{is_keyword: false})
 
   def xmap(nil, _, %{is_optional: true}), do: nil
@@ -579,25 +241,6 @@ defmodule SweetXml do
     put_in(result[label], xpath(parent, sweet_xpath))
   end
 
-  @doc """
-  Tags `%SweetXpath{}` with `fun` to be applied at the end of `xpath` query.
-
-  ## Examples
-
-    iex> import SweetXml
-    iex> string_to_range = fn str ->
-    ...>     [first, last] = str |> String.split("-", trim: true) |> Enum.map(&String.to_integer/1)
-    ...>     first..last
-    ...>   end
-    iex> doc = "<weather><zone><name>north</name><wind-speed>5-15</wind-speed></zone></weather>"
-    iex> doc
-    ...> |> xpath(
-    ...>      ~x"//weather/zone"l,
-    ...>      name: ~x"//name/text()"s |> transform_by(&String.capitalize/1),
-    ...>      wind_speed: ~x"./wind-speed/text()"s |> transform_by(string_to_range)
-    ...>    )
-    [%{name: "North", wind_speed: 5..15}]
-  """
   def transform_by(%SweetXpath{} = sweet_xpath, fun) when is_function(fun) do
     %{sweet_xpath | transform_fun: fun}
   end
