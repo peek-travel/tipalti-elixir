@@ -1,5 +1,5 @@
 # Tipalti
-[![Build Status](https://travis-ci.org/peek-travel/tipalti-elixir.svg?branch=master)](https://travis-ci.org/peek-travel/tipalti-elixir) [![codecov](https://codecov.io/gh/peek-travel/tipalti-elixir/branch/master/graph/badge.svg)](https://codecov.io/gh/peek-travel/tipalti-elixir) [![Hex.pm Version](https://img.shields.io/hexpm/v/tipalti-elixir.svg?style=flat)](https://hex.pm/packages/tipalti-elixir) [![Inline docs](http://inch-ci.org/github/peek-travel/tipalti-elixir.svg)](http://inch-ci.org/github/peek-travel/tipalti-elixir) [![License](https://img.shields.io/hexpm/l/tipalti-elixir.svg)](LICENSE.md)
+[![Build Status](https://travis-ci.org/peek-travel/tipalti-elixir.svg?branch=master)](https://travis-ci.org/peek-travel/tipalti-elixir) [![codecov](https://codecov.io/gh/peek-travel/tipalti-elixir/branch/master/graph/badge.svg)](https://codecov.io/gh/peek-travel/tipalti-elixir) [![Hex.pm Version](https://img.shields.io/hexpm/v/tipalti.svg?style=flat)](https://hex.pm/packages/tipalti) [![Inline docs](http://inch-ci.org/github/peek-travel/tipalti-elixir.svg)](http://inch-ci.org/github/peek-travel/tipalti-elixir) [![License](https://img.shields.io/hexpm/l/tipalti.svg)](LICENSE.md)
 
 [Tipalti](https://tipalti.com/) integration library for Elixir.
 

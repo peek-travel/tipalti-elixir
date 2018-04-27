@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased][]
 
-## 0.0.1 - 2017-09-08
+## 0.1.0 - 2018-04-26
 ### Initial release
 
-[Unreleased]: https://github.com/peek-travel/cocktail/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/peek-travel/tipalti-elixir/compare/0.1.0...HEAD
