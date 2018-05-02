@@ -16,8 +16,8 @@ defmodule Tipalti.API.Payer do
       production: "https://api.tipalti.com/#{@version}/PayerFunctions.asmx"
     ],
     standard_response: [
-      ok_code: 0,
-      error_paths: [error_code: ~x"./errorCode/text()"i, error_message: ~x"./errorMessage/text()"os]
+      ok_code: "OK",
+      error_paths: [error_code: ~x"./errorCode/text()"s, error_message: ~x"./errorMessage/text()"os]
     ]
 
   @typedoc """
@@ -66,16 +66,23 @@ defmodule Tipalti.API.Payer do
   """
   @spec get_balances() :: payer_response()
   def get_balances do
-    run("GetBalances", [], [:payer_name, :timestamp], {
-      ~x"//GetBalancesResult",
-      account_infos: [
-        ~x"./AccountInfos/TipaltiAccountInfo"l,
-        provider: ~x"./Provider/text()"os,
-        account_identifier: ~x"./AccountIdentifier/text()"os,
-        balance: ~x"./Balance/text()"os,
-        currency: ~x"./Currency/text()"os
-      ]
-    })
+    run(
+      "GetBalances",
+      [],
+      [:payer_name, :timestamp],
+      {
+        ~x"//GetBalancesResult",
+        account_infos: [
+          ~x"./AccountInfos/TipaltiAccountInfo"l,
+          provider: ~x"./Provider/text()"os,
+          account_identifier: ~x"./AccountIdentifier/text()"os,
+          balance: ~x"./Balance/text()"os,
+          currency: ~x"./Currency/text()"os
+        ]
+      },
+      ok_code: 0,
+      error_paths: [error_code: ~x"./errorCode/text()"i, error_message: ~x"./errorMessage/text()"os]
+    )
   end
 
   # TODO: GetCustomFields
