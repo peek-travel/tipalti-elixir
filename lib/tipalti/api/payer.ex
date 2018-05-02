@@ -35,7 +35,70 @@ defmodule Tipalti.API.Payer do
 
   # TODO: CreateOrUpdateGrns
 
-  # TODO: CreateOrUpdateInvoices
+  # TODO: docs, params
+  def create_or_update_invoices(invoices) do
+    run(
+      "CreateOrUpdateInvoices",
+      [
+        invoices:
+          optional_list(invoices, fn invoice ->
+            {:TipaltiInvoiceItemRequest,
+             [
+               Idap: invoice[:idap],
+               InvoiceRefCode: invoice[:ref_code],
+               InvoiceDate: invoice[:date],
+               InvoiceDueDate: invoice[:due_date],
+               InvoiceLines:
+                 optional_list(invoice[:line_items], fn line_item ->
+                   {:InvoiceLine,
+                    [
+                      Currency: line_item[:currency],
+                      Amount: line_item[:amount],
+                      Description: line_item[:description],
+                      InvoiceInternalNotes: line_item[:internal_notes],
+                      EWalletMessage: line_item[:e_wallet_message],
+                      BankingMessage: line_item[:banking_message],
+                      CustomFields:
+                        optional_list(line_item[:custom_fields], fn custom_field ->
+                          {:KeyValuePair, Key: custom_field[:key], Value: custom_field[:value]}
+                        end),
+                      # TODO: figure out what this is and how to support it
+                      GLAccount: nil,
+                      LineType: line_item[:line_type],
+                      LineExternalMetadata: line_item[:external_metadata],
+                      Quantity: line_item[:quantity]
+                    ]}
+                 end),
+               Description: invoice[:description],
+               CanApprove: invoice[:can_approve],
+               InvoiceInternalNotes: invoice[:internal_notes],
+               CustomFields:
+                 optional_list(invoice[:custom_fields], fn custom_field ->
+                   {:KeyValuePair, Key: custom_field[:key], Value: custom_field[:value]}
+                 end),
+               IsPaidManually: invoice[:is_paid_manually],
+               IncomeType: invoice[:income_type],
+               InvoiceStatus: invoice[:status],
+               Currency: invoice[:currency],
+               Approvers:
+                 optional_list(invoice[:approvers], fn approver ->
+                   {:TipaltiInvoiceApprover, Name: approver[:name], Email: approver[:email], Order: approver[:order]}
+                 end),
+               InvoiceNumber: invoice[:number],
+               PayerEntityName: invoice[:payer_entity_name],
+               InvoiceSubject: invoice[:subject],
+               ApAccountNumber: invoice[:ap_account_number]
+             ]}
+          end)
+      ],
+      [:payer_name, :timestamp],
+      {~x"//CreateOrUpdateInvoicesResult", :empty}
+    )
+  end
+
+  defp optional_list(nil, _), do: nil
+  defp optional_list([], _), do: nil
+  defp optional_list(items, fun), do: Enum.map(items, fun)
 
   # TODO: CreateOrUpdatePurchaseOrders
 
