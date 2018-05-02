@@ -35,33 +35,40 @@ defmodule Tipalti.API.Payee do
   @doc """
   Returns extended details and custom fields of given payees.
 
-  Included extended details are:
-  *   idap
-  *   alias
-  *   company_name
-  *   email
-  *   first_name
-  *   middle_name
-  *   last_name
-  *   payment_method
-  *   street1
-  *   street2
-  *   city
-  *   state
-  *   zip
-  *   country
-  *   phone
-  *   payment_currency
-  *   payable
-  *   status
-  *   preferred_payer_entity
-  *   actual_payer_entity
-  *   tax_form_status
-  *   portal_user
-  *   withholding_rate
-  *   tax_form_entity_type
-  *   tax_form_entity_name
-  *   tax_form_type
+  ## Parameters
+
+    * `idaps`: list of payee ids
+
+  ## Returns
+
+  `{:ok, map}` where map contains the following fields:
+
+  * idap
+  * alias
+  * company_name
+  * email
+  * first_name
+  * middle_name
+  * last_name
+  * payment_method
+  * street1
+  * street2
+  * city
+  * state
+  * zip
+  * country
+  * phone
+  * payment_currency
+  * payable
+  * status
+  * preferred_payer_entity
+  * actual_payer_entity
+  * tax_form_status
+  * portal_user
+  * withholding_rate
+  * tax_form_entity_type
+  * tax_form_entity_name
+  * tax_form_type
   """
   # TODO: add doctests ^
   @spec get_extended_payee_details_list([Tipalti.idap(), ...]) :: payee_response()
@@ -123,15 +130,22 @@ defmodule Tipalti.API.Payee do
   @doc """
   Returns details of a given payee.
 
-  Included details are:
-  *   name
-  *   company_name
-  *   alias
-  *   address
-  *   payment_method
-  *   email
-  *   payment_terms_id
-  *   payment_terms_name
+  ## Parameters
+
+    * `idap`: a payee id
+
+  ## Returns
+
+  `{:ok, map}` where map contains the following fields:
+
+  * name
+  * company_name
+  * alias
+  * address
+  * payment_method
+  * email
+  * payment_terms_id
+  * payment_terms_name
 
   ## Examples
 
@@ -181,7 +195,19 @@ defmodule Tipalti.API.Payee do
 
   If a payment request were to be issued, the payee might not get paid.
   Possible reasons for not being paid are - missing tax documents, payment below threshold, account locked, address
-  missing, or other. Returns true if payable. If false, the reason for not being payable will be included.
+  missing, or other.
+
+  ## Parameters
+
+  * `idap`: a payee id
+  * `amount`: the amount for which you'd want to pay this payee (default: `100.0`)
+
+  ## Returns
+
+  `{:ok, map}` where map contains the following fields:
+
+  * payable - boolean
+  * reason - `nil` or a string for the reason the payee is not payable
 
   ## Examples
 
