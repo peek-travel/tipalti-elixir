@@ -5,7 +5,7 @@ defmodule Tipalti.API.SOAP.Client do
 
   import Tipalti.Config
 
-  adapter :hackney
+  adapter :hackney, recv_timeout: 60_000
 
   plug Tesla.Middleware.Headers, %{"Content-Type" => "application/soap+xml; charset=utf-8"}
 
