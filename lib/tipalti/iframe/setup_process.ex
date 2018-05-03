@@ -110,9 +110,9 @@ defmodule Tipalti.IFrame.SetupProcess do
         userinfo: nil
       }
 
-      iex> params = %Tipalti.IFrame.SetupProcess{idap: "mypayee"}
-      ...> url(params) |> URI.to_string()
-      "https://ui2.sandbox.tipalti.com/PayeeDashboard/Home?idap=mypayee&payer=MyPayer&ts=1521234048&hashkey=9413b4db4c08519497b6c236861049793e8834ac4de5e3cd866b7fec96e54eaa"
+      iex> params = %Tipalti.IFrame.SetupProcess{idap: "mypayee", company: "My Company", first: "Joe"}
+      ...> url(params, force: [:company], read_only: [:first]) |> URI.to_string()
+      "https://ui2.sandbox.tipalti.com/PayeeDashboard/Home?first=Joe&firstSetReadOnly=TRUE&forceCompany=My+Company&idap=mypayee&payer=MyPayer&ts=1521234048&hashkey=78f5d8126f299fd2f80024cc00bccf2b43bae28987eb0a3b44d5d8d4bece7f14"
   """
   @spec url(t(), options()) :: URI.t()
   def url(struct, opts \\ []) do

@@ -17,6 +17,12 @@ defmodule Tipalti.API.SOAP.ResponseParser do
     end
   end
 
+  def parse_without_errors(body, root_path, paths) do
+    document = xpath(body, ~x"/"e)
+
+    xpath(document, root_path, paths)
+  end
+
   defp is_ok?(document, root_path, response_opts) do
     ok_code = response_opts[:ok_code]
     error_paths = response_opts[:error_paths]

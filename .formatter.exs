@@ -6,6 +6,7 @@
   locals_without_parens: [
     # TODO: remove this when tesla exports formatter config
     adapter: 1,
+    adapter: 2,
     plug: 2
   ]
 ]
