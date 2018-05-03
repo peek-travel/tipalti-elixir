@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.2.0][] - 2018-05-03
 ### Added
--   Payer function CreateOrUpdateInvoices (<https://hexdocs.pm/tipalti/Tipalti.API.Payer.html#create_or_update_invoices/0>)
+-   Payer function CreateOrUpdateInvoices ([docs](https://hexdocs.pm/tipalti/Tipalti.API.Payer.html#create_or_update_invoices/0))
 
 ## 0.1.0 - 2018-04-26
 ### Initial release
