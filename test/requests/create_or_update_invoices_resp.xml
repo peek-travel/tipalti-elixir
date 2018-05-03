@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <CreateOrUpdateInvoicesResponse xmlns="http://Tipalti.org/">
+      <CreateOrUpdateInvoicesResult>
+        <errorMessage>Line 0 /  ID somepayee: Due date cannot be earlier then invoice date</errorMessage>
+        <errorCode>InvoiceValidationError</errorCode>
+        <b xsi:nil="true"/>
+        <i xsi:nil="true"/>
+        <d xsi:nil="true"/>
+        <InvoiceErrors>
+          <TipaltiInvoiceItemResult>
+            <ErrorMessage>Due date cannot be earlier then invoice date</ErrorMessage>
+            <Succeeded>false</Succeeded>
+            <InvoiceRefCode>testinvoice1</InvoiceRefCode>
+          </TipaltiInvoiceItemResult>
+          <TipaltiInvoiceItemResult>
+            <Succeeded>true</Succeeded>
+            <InvoiceRefCode>testinvoice2</InvoiceRefCode>
+          </TipaltiInvoiceItemResult>
+        </InvoiceErrors>
+      </CreateOrUpdateInvoicesResult>
+    </CreateOrUpdateInvoicesResponse>
+  </soap:Body>
+</soap:Envelope>
