@@ -15,4 +15,9 @@ defmodule Tipalti do
   An `idap` is a string representing the id of a payee in Tipalti.
   """
   @type idap :: String.t()
+
+  @typedoc """
+  Key/Value pair used for custom fields.
+  """
+  @type key_value_pair :: %{key: String.t(), value: String.t()}
 end

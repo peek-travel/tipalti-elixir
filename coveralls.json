@@ -1,5 +1,6 @@
 {
   "skip_files": [
-    "lib/sweet_xml"
+    "lib/sweet_xml",
+    "lib/tipalti/api/soap/client"
   ]
 }

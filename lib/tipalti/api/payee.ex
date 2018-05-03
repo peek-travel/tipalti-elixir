@@ -35,35 +35,87 @@ defmodule Tipalti.API.Payee do
   @doc """
   Returns extended details and custom fields of given payees.
 
-  Included extended details are:
-  *   idap
-  *   alias
-  *   company_name
-  *   email
-  *   first_name
-  *   middle_name
-  *   last_name
-  *   payment_method
-  *   street1
-  *   street2
-  *   city
-  *   state
-  *   zip
-  *   country
-  *   phone
-  *   payment_currency
-  *   payable
-  *   status
-  *   preferred_payer_entity
-  *   actual_payer_entity
-  *   tax_form_status
-  *   portal_user
-  *   withholding_rate
-  *   tax_form_entity_type
-  *   tax_form_entity_name
-  *   tax_form_type
+  ## Parameters
+
+    * `idaps`: list of payee ids
+
+  ## Returns
+
+  `{:ok, map}` where map contains the following fields:
+
+  * custom_fields
+    * array of `%{key: key, value: value}` custom field maps
+  * properties
+    * actual_payer_entity
+    * alias
+    * city
+    * company_name
+    * country
+    * email
+    * first_name
+    * idap
+    * last_name
+    * middle_name
+    * payable
+    * payment_currency
+    * payment_method
+    * phone
+    * portal_user
+    * preferred_payer_entity
+    * state
+    * status
+    * street1
+    * street2
+    * tax_form_entity_name
+    * tax_form_entity_type
+    * tax_form_status
+    * tax_form_type
+    * withholding_rate
+    * zip
+
+  ## Examples
+
+        iex> get_extended_payee_details_list(["somepayee"])
+        {:ok,
+         %{
+           payees: [
+             %{
+               custom_fields: [],
+               properties: %{
+                 actual_payer_entity: "Peek",
+                 alias: "acmepayee",
+                 city: nil,
+                 company_name: "ACME",
+                 country: "--",
+                 email: "someone@example.com",
+                 first_name: "Some",
+                 idap: "somepayee",
+                 last_name: "Payee",
+                 middle_name: nil,
+                 payable: false,
+                 payment_currency: "USD",
+                 payment_method: "NoPM",
+                 phone: nil,
+                 portal_user: "NotRegistered",
+                 preferred_payer_entity: "Peek",
+                 state: nil,
+                 status: "Active",
+                 street1: "123 Somewhere St.",
+                 street2: nil,
+                 tax_form_entity_name: nil,
+                 tax_form_entity_type: "UNKNOWN",
+                 tax_form_status: "NOT_SUBMITTED",
+                 tax_form_type: nil,
+                 withholding_rate: nil,
+                 zip: nil
+               }
+             }
+           ]
+         }}
+
+        iex> get_extended_payee_details_list(["badpayee"])
+        {:ok, %{payees: []}}
   """
-  # TODO: add doctests ^
   @spec get_extended_payee_details_list([Tipalti.idap(), ...]) :: payee_response()
   def get_extended_payee_details_list(idaps) do
     prop_getter = fn key -> "./KeyValuePair/Key[text()='#{key}']/../Value/text()" end
@@ -123,15 +175,22 @@ defmodule Tipalti.API.Payee do
   @doc """
   Returns details of a given payee.
 
-  Included details are:
-  *   name
-  *   company_name
-  *   alias
-  *   address
-  *   payment_method
-  *   email
-  *   payment_terms_id
-  *   payment_terms_name
+  ## Parameters
+
+    * `idap`: a payee id
+
+  ## Returns
+
+  `{:ok, map}` where map contains the following fields:
+
+  * name
+  * company_name
+  * alias
+  * address
+  * payment_method
+  * email
+  * payment_terms_id
+  * payment_terms_name
 
   ## Examples
 
@@ -181,7 +240,19 @@ defmodule Tipalti.API.Payee do
 
   If a payment request were to be issued, the payee might not get paid.
   Possible reasons for not being paid are - missing tax documents, payment below threshold, account locked, address
-  missing, or other. Returns true if payable. If false, the reason for not being payable will be included.
+  missing, or other.
+
+  ## Parameters
+
+  * `idap`: a payee id
+  * `amount`: the amount for which you'd want to pay this payee (default: `100.0`)
+
+  ## Returns
+
+  `{:ok, map}` where map contains the following fields:
+
+  * payable - boolean
+  * reason - `nil` or a string for the reason the payee is not payable
 
   ## Examples
 

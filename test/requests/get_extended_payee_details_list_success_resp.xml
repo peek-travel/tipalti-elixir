@@ -1,0 +1,127 @@
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <GetExtendedPayeeDetailsListResponse xmlns="http://Tipalti.org/">
+      <GetExtendedPayeeDetailsListResult>
+        <errorMessage>OK</errorMessage>
+        <errorCode>OK</errorCode>
+        <b xsi:nil="true"/>
+        <i xsi:nil="true"/>
+        <d xsi:nil="true"/>
+        <Payees>
+          <TipaltiExtendedPayeeDetailsResponse>
+            <errorMessage>OK</errorMessage>
+            <errorCode>OK</errorCode>
+            <b xsi:nil="true"/>
+            <i xsi:nil="true"/>
+            <d xsi:nil="true"/>
+            <Properties>
+              <KeyValuePair>
+                <Key>Alias</Key>
+                <Value>acmepayee</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>CompanyName</Key>
+                <Value>ACME</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>Email</Key>
+                <Value>someone@example.com</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>FirstName</Key>
+                <Value>Some</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>MiddleName</Key>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>LastName</Key>
+                <Value>Payee</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>PaymentMethod</Key>
+                <Value>NoPM</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>Street1</Key>
+                <Value>123 Somewhere St.</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>Street2</Key>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>City</Key>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>State</Key>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>Zip</Key>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>Country</Key>
+                <Value>--</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>Phone</Key>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>PaymentCurrency</Key>
+                <Value>USD</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>Payable</Key>
+                <Value>False</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>Status</Key>
+                <Value>Active</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>PreferredPayerEntity</Key>
+                <Value>Peek</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>ActualPayerEntity</Key>
+                <Value>Peek</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>Idap</Key>
+                <Value>somepayee</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>CountryName</Key>
+                <Value>- No country selected -</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>TaxFormStatus</Key>
+                <Value>NOT_SUBMITTED</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>PortalUser</Key>
+                <Value>NotRegistered</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>WithholdingRate</Key>
+                <Value/>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>TaxFormEntityType</Key>
+                <Value>UNKNOWN</Value>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>TaxFormEntityName</Key>
+                <Value/>
+              </KeyValuePair>
+              <KeyValuePair>
+                <Key>TaxFormType</Key>
+                <Value/>
+              </KeyValuePair>
+            </Properties>
+            <CustomFields/>
+          </TipaltiExtendedPayeeDetailsResponse>
+        </Payees>
+      </GetExtendedPayeeDetailsListResult>
+    </GetExtendedPayeeDetailsListResponse>
+  </soap:Body>
+</soap:Envelope>
