@@ -9,12 +9,13 @@ defmodule Tipalti.API.Payer do
   import SweetXml, only: [sigil_x: 2]
 
   @version "v5"
+  @url [
+    sandbox: "https://api.sandbox.tipalti.com/#{@version}/PayerFunctions.asmx",
+    production: "https://api.tipalti.com/#{@version}/PayerFunctions.asmx"
+  ]
 
   use Tipalti.API,
-    url: [
-      sandbox: "https://api.sandbox.tipalti.com/#{@version}/PayerFunctions.asmx",
-      production: "https://api.tipalti.com/#{@version}/PayerFunctions.asmx"
-    ],
+    url: @url,
     standard_response: [
       ok_code: "OK",
       error_paths: [error_code: ~x"./errorCode/text()"s, error_message: ~x"./errorMessage/text()"os]
@@ -35,65 +36,82 @@ defmodule Tipalti.API.Payer do
 
   # TODO: CreateOrUpdateGrns
 
-  # TODO: docs, params
+  @doc """
+  TODO
+  """
   def create_or_update_invoices(invoices) do
-    run(
-      "CreateOrUpdateInvoices",
-      [
-        invoices:
-          optional_list(invoices, fn invoice ->
-            {:TipaltiInvoiceItemRequest,
-             [
-               Idap: invoice[:idap],
-               InvoiceRefCode: invoice[:ref_code],
-               InvoiceDate: invoice[:date],
-               InvoiceDueDate: invoice[:due_date],
-               InvoiceLines:
-                 optional_list(invoice[:line_items], fn line_item ->
-                   {:InvoiceLine,
-                    [
-                      Currency: line_item[:currency],
-                      Amount: line_item[:amount],
-                      Description: line_item[:description],
-                      InvoiceInternalNotes: line_item[:internal_notes],
-                      EWalletMessage: line_item[:e_wallet_message],
-                      BankingMessage: line_item[:banking_message],
-                      CustomFields:
-                        optional_list(line_item[:custom_fields], fn custom_field ->
-                          {:KeyValuePair, Key: custom_field[:key], Value: custom_field[:value]}
-                        end),
-                      # TODO: figure out what this is and how to support it
-                      GLAccount: nil,
-                      LineType: line_item[:line_type],
-                      LineExternalMetadata: line_item[:external_metadata],
-                      Quantity: line_item[:quantity]
-                    ]}
-                 end),
-               Description: invoice[:description],
-               CanApprove: invoice[:can_approve],
-               InvoiceInternalNotes: invoice[:internal_notes],
-               CustomFields:
-                 optional_list(invoice[:custom_fields], fn custom_field ->
-                   {:KeyValuePair, Key: custom_field[:key], Value: custom_field[:value]}
-                 end),
-               IsPaidManually: invoice[:is_paid_manually],
-               IncomeType: invoice[:income_type],
-               InvoiceStatus: invoice[:status],
-               Currency: invoice[:currency],
-               Approvers:
-                 optional_list(invoice[:approvers], fn approver ->
-                   {:TipaltiInvoiceApprover, Name: approver[:name], Email: approver[:email], Order: approver[:order]}
-                 end),
-               InvoiceNumber: invoice[:number],
-               PayerEntityName: invoice[:payer_entity_name],
-               InvoiceSubject: invoice[:subject],
-               ApAccountNumber: invoice[:ap_account_number]
-             ]}
-          end)
-      ],
-      [:payer_name, :timestamp],
-      {~x"//CreateOrUpdateInvoicesResult", :empty}
-    )
+    payload =
+      RequestBuilder.build(
+        "CreateOrUpdateInvoices",
+        [
+          invoices:
+            optional_list(invoices, fn invoice ->
+              {:TipaltiInvoiceItemRequest,
+               [
+                 Idap: invoice[:idap],
+                 InvoiceRefCode: invoice[:ref_code],
+                 InvoiceDate: invoice[:date],
+                 InvoiceDueDate: invoice[:due_date],
+                 InvoiceLines:
+                   optional_list(invoice[:line_items], fn line_item ->
+                     {:InvoiceLine,
+                      [
+                        Currency: line_item[:currency],
+                        Amount: line_item[:amount],
+                        Description: line_item[:description],
+                        InvoiceInternalNotes: line_item[:internal_notes],
+                        EWalletMessage: line_item[:e_wallet_message],
+                        BankingMessage: line_item[:banking_message],
+                        CustomFields:
+                          optional_list(line_item[:custom_fields], fn custom_field ->
+                            {:KeyValuePair, Key: custom_field[:key], Value: custom_field[:value]}
+                          end),
+                        # TODO: figure out what this is and how to support it
+                        GLAccount: nil,
+                        LineType: line_item[:line_type],
+                        LineExternalMetadata: line_item[:external_metadata],
+                        Quantity: line_item[:quantity]
+                      ]}
+                   end),
+                 Description: invoice[:description],
+                 CanApprove: invoice[:can_approve],
+                 InvoiceInternalNotes: invoice[:internal_notes],
+                 CustomFields:
+                   optional_list(invoice[:custom_fields], fn custom_field ->
+                     {:KeyValuePair, Key: custom_field[:key], Value: custom_field[:value]}
+                   end),
+                 IsPaidManually: invoice[:is_paid_manually],
+                 IncomeType: invoice[:income_type],
+                 InvoiceStatus: invoice[:status],
+                 Currency: invoice[:currency],
+                 Approvers:
+                   optional_list(invoice[:approvers], fn approver ->
+                     {:TipaltiInvoiceApprover, Name: approver[:name], Email: approver[:email], Order: approver[:order]}
+                   end),
+                 InvoiceNumber: invoice[:number],
+                 PayerEntityName: invoice[:payer_entity_name],
+                 InvoiceSubject: invoice[:subject],
+                 ApAccountNumber: invoice[:ap_account_number]
+               ]}
+            end)
+        ],
+        [:payer_name, :timestamp]
+      )
+
+    client = Application.get_env(:tipalti, :api_client_module, Client)
+
+    with {:ok, body} <- client.send(@url, payload) do
+      ResponseParser.parse_without_errors(
+        body,
+        ~x"//CreateOrUpdateInvoicesResult",
+        invoice_results: [
+          ~x"./InvoiceErrors/TipaltiInvoiceItemResult"l,
+          error_message: ~x"./ErrorMessage/text()"os,
+          succeeded: ~x"./Succeeded/text()"b,
+          ref_code: ~x"./InvoiceRefCode/text()"os
+        ]
+      )
+    end
   end
 
   defp optional_list(nil, _), do: nil
