@@ -5,22 +5,39 @@ defmodule Tipalti.API.SOAP.Client do
   import Tipalti.Config
   require Logger
 
-  adapter :hackney, recv_timeout: 60_000
+  adapter Tesla.Adapter.Hackney
 
-  plug Tesla.Middleware.Headers, %{"Content-Type" => "application/soap+xml; charset=utf-8"}
+  plug Tesla.Middleware.Headers, [{"Content-Type", "application/soap+xml; charset=utf-8"}]
 
   def send(base_urls, payload) do
     url = base_urls[mode()]
+    log_request(url, payload)
 
+    case post(url, payload) do
+      {:ok, env = %Tesla.Env{status: 200, body: body}} ->
+        log_response(env)
+        {:ok, body}
+
+      {:ok, env = %Tesla.Env{status: status}} ->
+        log_response(env)
+        {:error, {:bad_http_response, status}}
+
+      {:error, reason} ->
+        Logger.error(fn -> "[Tipalti] request failed: " <> inspect(reason) end)
+        {:error, {:request_failed, reason}}
+    end
+  end
+
+  defp log_request(url, payload) do
     Logger.debug(fn ->
       """
       [Tipalti] ->> sending payload to #{url}
       #{payload}
       """
     end)
+  end
 
-    env = post(url, payload)
-
+  defp log_response(env) do
     Logger.debug(fn ->
       charlist_body = env.body |> String.replace("\"", "\\\"") |> to_charlist()
 
@@ -36,11 +53,5 @@ defmodule Tipalti.API.SOAP.Client do
       #{pretty_printed_body}
       """
     end)
-
-    env |> parse_response()
   end
-
-  defp parse_response(%Tesla.Env{status: 200, body: body}), do: {:ok, body}
-
-  defp parse_response(%Tesla.Env{status: status}), do: {:error, {:bad_http_response, status}}
 end
