@@ -20,6 +20,7 @@ defmodule Tipalti.IFrame do
     params
     |> Enum.reduce(%{}, &format_param(&1, &2, opts))
     |> Map.merge(%{"payer" => payer(), "ts" => timestamp()})
+    |> Enum.into(%{}, fn {key, value} -> {Inflex.camelize(key, :lower), value} end)
   end
 
   defp format_param({key, value}, params, opts) do
@@ -31,10 +32,10 @@ defmodule Tipalti.IFrame do
         params
 
       key in force ->
-        Map.put(params, "force" <> String.capitalize("#{key}"), value)
+        Map.put(params, "force_#{key}", value)
 
       key in read_only ->
-        Map.merge(params, %{"#{key}" => value, ("#{key}" <> "SetReadOnly") => "TRUE"})
+        Map.merge(params, %{"#{key}" => value, "#{key}_set_read_only" => "TRUE"})
 
       :else ->
         Map.put(params, "#{key}", value)
