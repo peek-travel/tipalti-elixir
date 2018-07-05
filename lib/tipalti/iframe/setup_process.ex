@@ -68,7 +68,8 @@ defmodule Tipalti.IFrame.SetupProcess do
           zip: String.t(),
           state: String.t(),
           alias: String.t(),
-          email: String.t()
+          email: String.t(),
+          preferred_payer_entity: String.t()
         }
 
   @enforce_keys [:idap]
@@ -85,7 +86,8 @@ defmodule Tipalti.IFrame.SetupProcess do
             zip: nil,
             state: nil,
             alias: nil,
-            email: nil
+            email: nil,
+            preferred_payer_entity: nil
 
   @url %{
     sandbox: URI.parse("https://ui2.sandbox.tipalti.com/PayeeDashboard/Home"),
@@ -97,7 +99,7 @@ defmodule Tipalti.IFrame.SetupProcess do
 
   ## Examples
 
-      iex> params = %Tipalti.IFrame.SetupProcess{idap: "mypayee"}
+      iex> params = %Tipalti.IFrame.SetupProcess{idap: "mypayee", preferred_payer_entity: "Foo"}
       ...> url(params)
       %URI{
         authority: "ui2.sandbox.tipalti.com",
@@ -105,7 +107,7 @@ defmodule Tipalti.IFrame.SetupProcess do
         host: "ui2.sandbox.tipalti.com",
         path: "/PayeeDashboard/Home",
         port: 443,
-        query: "idap=mypayee&payer=MyPayer&ts=1521234048&hashkey=9413b4db4c08519497b6c236861049793e8834ac4de5e3cd866b7fec96e54eaa",
+        query: "idap=mypayee&payer=MyPayer&preferredPayerEntity=Foo&ts=1521234048&hashkey=899314ff57da786a9cda58f3296b844cd4fbeac75dbfaec13cf8a04aca3d99db",
         scheme: "https",
         userinfo: nil
       }
