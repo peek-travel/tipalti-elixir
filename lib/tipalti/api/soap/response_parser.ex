@@ -5,22 +5,41 @@ defmodule Tipalti.API.SOAP.ResponseParser do
 
   def parse(body, root_path, :empty, response_opts) do
     with :ok <- is_ok?(body, root_path, response_opts) do
-      {:ok, :ok}
+      :ok
     end
   end
 
-  def parse(body, root_path, paths, response_opts) do
+  def parse(body, root_path, %SweetXpath{} = path, response_opts) do
     document = xpath(body, ~x"/"e)
 
     with :ok <- is_ok?(document, root_path, response_opts) do
-      {:ok, xpath(document, root_path, paths)}
+      element = xpath(document, root_path)
+      {:ok, xpath(element, path)}
     end
   end
 
-  def parse_without_errors(body, root_path, paths) do
+  def parse(body, root_path, [%SweetXpath{} = path | mapping], response_opts) do
     document = xpath(body, ~x"/"e)
 
-    xpath(document, root_path, paths)
+    with :ok <- is_ok?(document, root_path, response_opts) do
+      element = xpath(document, root_path)
+      {:ok, xpath(element, path, mapping)}
+    end
+  end
+
+  def parse(body, root_path, mapping, response_opts) do
+    document = xpath(body, ~x"/"e)
+
+    with :ok <- is_ok?(document, root_path, response_opts) do
+      {:ok, xpath(document, root_path, mapping)}
+    end
+  end
+
+  def parse_without_errors(body, root_path, [path | mapping]) do
+    document = xpath(body, ~x"/"e)
+    element = xpath(document, root_path)
+
+    xpath(element, path, mapping)
   end
 
   defp is_ok?(document, root_path, response_opts) do

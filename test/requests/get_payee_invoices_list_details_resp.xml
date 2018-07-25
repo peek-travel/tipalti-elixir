@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <GetPayeeInvoicesListDetailsResponse xmlns="http://Tipalti.org/">
+      <GetPayeeInvoicesListDetailsResult>
+        <errorMessage>OK</errorMessage>
+        <errorCode>OK</errorCode>
+        <b xsi:nil="true"/>
+        <i xsi:nil="true"/>
+        <d xsi:nil="true"/>
+        <InvoiceErrors/>
+        <InvoiceErrors>
+          <TipaltiInvoiceItemError>
+            <ErrorMessage>InvoiceRefCodeUnknown</ErrorMessage>
+            <ErrorCode>InvoiceRefCodeUnknown</ErrorCode>
+            <InvoiceRefCode>missing</InvoiceRefCode>
+          </TipaltiInvoiceItemError>
+        </InvoiceErrors>
+        <Invoices>
+          <TipaltiInvoiceItemResponse>
+            <Idap>payee1</Idap>
+            <InvoiceRefCode>12345</InvoiceRefCode>
+            <InvoiceDate>2018-07-23T00:00:00</InvoiceDate>
+            <InvoiceDueDate>2018-07-27T00:00:00</InvoiceDueDate>
+            <InvoiceLines>
+              <InvoiceLine>
+                <Currency>USD</Currency>
+                <Amount>3.61</Amount>
+                <Description>Charges</Description>
+                <CustomFields/>
+                <LineType xsi:nil="true"/>
+                <Quantity xsi:nil="true"/>
+              </InvoiceLine>
+            </InvoiceLines>
+            <Description>Some invoice</Description>
+            <CanApprove>false</CanApprove>
+            <InvoiceInternalNotes>Notes</InvoiceInternalNotes>
+            <CustomFields/>
+            <IsPaidManually>false</IsPaidManually>
+            <InvoiceStatus>PendingPayment</InvoiceStatus>
+            <Currency>USD</Currency>
+            <Approvers/>
+            <InvoiceNumber>h6gz1gs2e</InvoiceNumber>
+            <ApprovalDate>0001-01-01T00:00:00</ApprovalDate>
+            <PayerEntityName>SomePayee</PayerEntityName>
+            <AmountDue>3.61</AmountDue>
+          </TipaltiInvoiceItemResponse>
+          <TipaltiInvoiceItemResponse>
+            <Idap>payee2</Idap>
+            <InvoiceRefCode>12346</InvoiceRefCode>
+            <InvoiceDate>2018-07-18T00:00:00</InvoiceDate>
+            <InvoiceDueDate>2018-07-20T00:00:00</InvoiceDueDate>
+            <InvoiceLines>
+              <InvoiceLine>
+                <Currency>USD</Currency>
+                <Amount>10.47</Amount>
+                <Description>Charges</Description>
+                <CustomFields/>
+                <LineType xsi:nil="true"/>
+                <Quantity xsi:nil="true"/>
+              </InvoiceLine>
+            </InvoiceLines>
+            <Description>Some other invoice</Description>
+            <CanApprove>false</CanApprove>
+            <InvoiceInternalNotes>Notes notes notes</InvoiceInternalNotes>
+            <CustomFields/>
+            <IsPaidManually>false</IsPaidManually>
+            <InvoiceStatus>PendingPayment</InvoiceStatus>
+            <Currency>USD</Currency>
+            <Approvers/>
+            <InvoiceNumber>h6gz1grv4</InvoiceNumber>
+            <ApprovalDate>0001-01-01T00:00:00</ApprovalDate>
+            <PayerEntityName>SomePayee</PayerEntityName>
+            <AmountDue>10.47</AmountDue>
+          </TipaltiInvoiceItemResponse>
+        </Invoices>
+      </GetPayeeInvoicesListDetailsResult>
+    </GetPayeeInvoicesListDetailsResponse>
+  </soap:Body>
+</soap:Envelope>

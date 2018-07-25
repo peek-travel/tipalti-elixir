@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <GetPayeeInvoicesChangedSinceTimestampResponse xmlns="http://Tipalti.org/">
+      <GetPayeeInvoicesChangedSinceTimestampResult>
+        <errorMessage>OK</errorMessage>
+        <errorCode>OK</errorCode>
+        <b xsi:nil="true"/>
+        <i xsi:nil="true"/>
+        <d xsi:nil="true"/>
+        <changedInvoicesRefCode>
+          <string>12345</string>
+          <string>12346</string>
+          <string>12347</string>
+        </changedInvoicesRefCode>
+      </GetPayeeInvoicesChangedSinceTimestampResult>
+    </GetPayeeInvoicesChangedSinceTimestampResponse>
+  </soap:Body>
+</soap:Envelope>

@@ -66,6 +66,7 @@ defmodule Tipalti.MixProject do
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
+      {:ex_money, "~> 2.6"},
       {:excoveralls, "~> 0.7", only: :test},
       {:hackney, "~> 1.11"},
       {:inch_ex, ">= 0.0.0", only: :docs},
