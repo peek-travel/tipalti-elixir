@@ -2,6 +2,7 @@ defmodule Tipalti.API.SOAP.ResponseParser do
   @moduledoc false
 
   import SweetXml
+  alias Tipalti.ClientError
 
   def parse(body, root_path, :empty, response_opts) do
     with :ok <- is_ok?(body, root_path, response_opts) do
@@ -51,7 +52,7 @@ defmodule Tipalti.API.SOAP.ResponseParser do
         :ok
 
       error ->
-        {:error, error}
+        {:error, ClientError.from_map!(error)}
     end
   end
 end

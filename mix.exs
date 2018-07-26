@@ -13,7 +13,10 @@ defmodule Tipalti.MixProject do
       package: package(),
       deps: deps(),
       docs: docs(),
-      dialyzer: [flags: [:unmatched_returns, :error_handling, :underspecs]],
+      dialyzer: [
+        ignore_warnings: ".dialyzer_ignore.exs",
+        flags: [:unmatched_returns, :error_handling, :underspecs]
+      ],
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -56,7 +59,23 @@ defmodule Tipalti.MixProject do
       main: "Tipalti",
       source_ref: @version,
       source_url: "https://github.com/peek-travel/tipalti-elixir",
-      extras: ["README.md", "LICENSE.md"]
+      extras: ["README.md", "LICENSE.md"],
+      groups_for_modules: [
+        API: [Tipalti.API.Payee, Tipalti.API.Payer],
+        IFrames: [Tipalti.IFrame.InvoiceHistory, Tipalti.IFrame.PaymentsHistory, Tipalti.IFrame.SetupProcess],
+        "Data types": [
+          Tipalti.Balance,
+          Tipalti.ClientError,
+          Tipalti.CustomField,
+          Tipalti.Invoice,
+          Tipalti.Invoice.Line,
+          Tipalti.Invoice.Approver,
+          Tipalti.PayeeExtended,
+          Tipalti.PayeeExtended.Properties,
+          Tipalti.Payee,
+          Tipalti.RequestError
+        ]
+      ]
     ]
   end
 
@@ -64,8 +83,8 @@ defmodule Tipalti.MixProject do
   defp deps do
     [
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.0.0-rc.3", only: [:dev], runtime: false},
+      {:ex_doc, "~> 0.18.0", only: :dev, runtime: false},
       {:ex_money, "~> 2.6"},
       {:excoveralls, "~> 0.7", only: :test},
       {:hackney, "~> 1.11"},

@@ -8,7 +8,7 @@ defmodule Tipalti.API.Payer do
   import SweetXml, only: [sigil_x: 2]
 
   alias Tipalti.API.SOAP.Client
-  alias Tipalti.{Invoice, Balance}
+  alias Tipalti.{Invoice, Balance, ClientError, RequestError}
 
   @version "v5"
   @url [
@@ -22,11 +22,6 @@ defmodule Tipalti.API.Payer do
       ok_code: "OK",
       error_paths: [error_code: ~x"./errorCode/text()"s, error_message: ~x"./errorMessage/text()"os]
     ]
-
-  @typedoc """
-  All Payer API responses are of this form.
-  """
-  @type payer_response :: :ok | {:ok, any()} | {:error, any()}
 
   @doc """
   Not yet implemented
@@ -172,7 +167,9 @@ defmodule Tipalti.API.Payer do
         %{error_message: nil, ref_code: "testinvoice2", succeeded: true}
       ]}
   """
-  @spec create_or_update_invoices([invoice()]) :: payer_response()
+  @spec create_or_update_invoices([invoice()]) ::
+          {:ok, [%{error_message: String.t() | nil, ref_code: String.t(), succeeded: boolean()}]}
+          | {:error, RequestError.t()}
   def create_or_update_invoices(invoices) do
     payload =
       RequestBuilder.build(
@@ -291,7 +288,7 @@ defmodule Tipalti.API.Payer do
         }
       ]}
   """
-  @spec get_balances() :: payer_response()
+  @spec get_balances() :: {:ok, [Tipalti.Balance.t()]} | {:error, ClientError.t()} | {:error, RequestError.t()}
   def get_balances do
     with {:ok, balances_maps} <-
            run(
@@ -335,6 +332,10 @@ defmodule Tipalti.API.Payer do
 
   @doc """
   Return list of payee invoices.
+
+  ## Parameters
+
+    * `invoice_ref_codes`: list of invoice reference codes
 
   ## Examples
 
@@ -395,7 +396,8 @@ defmodule Tipalti.API.Payer do
         }
       ]}
   """
-  @spec get_payee_invoices_list_details([String.t()]) :: payer_response()
+  @spec get_payee_invoices_list_details([Invoice.ref_code()]) ::
+          {:ok, [Invoice.t()]} | {:error, ClientError.t()} | {:error, RequestError.t()}
   def get_payee_invoices_list_details(invoice_ref_codes) do
     with {:ok, %{errors: _errors, invoices: invoice_maps}} <-
            run(
@@ -427,7 +429,7 @@ defmodule Tipalti.API.Payer do
                      value: ~x"./Value/text()"os
                    ],
                    line_type: ~x"./LineType/text()"os,
-                   quantity: ~x"./Quantity/text()"os
+                   quantity: ~x"./Quantity/text()"oi
                  ],
                  description: ~x"./Description/text()"s,
                  can_approve: ~x"./CanApprove/text()"b,

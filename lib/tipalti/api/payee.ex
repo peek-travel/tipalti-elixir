@@ -7,24 +7,20 @@ defmodule Tipalti.API.Payee do
 
   import SweetXml, only: [sigil_x: 2]
 
-  alias Tipalti.{Payee, PayeeExtended}
+  alias Tipalti.{Payee, PayeeExtended, ClientError, RequestError}
 
   @version "v6"
+  @url [
+    sandbox: "https://api.sandbox.tipalti.com/#{@version}/PayeeFunctions.asmx",
+    production: "https://api.tipalti.com/#{@version}/PayeeFunctions.asmx"
+  ]
 
   use Tipalti.API,
-    url: [
-      sandbox: "https://api.sandbox.tipalti.com/#{@version}/PayeeFunctions.asmx",
-      production: "https://api.tipalti.com/#{@version}/PayeeFunctions.asmx"
-    ],
+    url: @url,
     standard_response: [
       ok_code: "OK",
       error_paths: [error_code: ~x"./errorCode/text()"s, error_message: ~x"./errorMessage/text()"os]
     ]
-
-  @typedoc """
-  All Payee API responses are of this form.
-  """
-  @type payee_response :: :oK | {:ok, any()} | {:error, any()}
 
   @doc """
   Not yet implemented
@@ -56,40 +52,6 @@ defmodule Tipalti.API.Payee do
   ## Parameters
 
     * `idaps`: list of payee ids
-
-  ## Returns
-
-  `{:ok, map}` where map contains the following fields:
-
-  * custom_fields
-    * array of `%{key: key, value: value}` custom field maps
-  * properties
-    * actual_payer_entity
-    * alias
-    * city
-    * company_name
-    * country
-    * email
-    * first_name
-    * idap
-    * last_name
-    * middle_name
-    * payable
-    * payment_currency
-    * payment_method
-    * phone
-    * portal_user
-    * preferred_payer_entity
-    * state
-    * status
-    * street1
-    * street2
-    * tax_form_entity_name
-    * tax_form_entity_type
-    * tax_form_status
-    * tax_form_type
-    * withholding_rate
-    * zip
 
   ## Examples
 
@@ -132,7 +94,8 @@ defmodule Tipalti.API.Payee do
         iex> get_extended_payee_details_list(["badpayee"])
         {:ok, []}
   """
-  @spec get_extended_payee_details_list([Tipalti.idap(), ...]) :: payee_response()
+  @spec get_extended_payee_details_list([Tipalti.idap()]) ::
+          {:ok, [PayeeExtended.t()]} | {:error, ClientError.t()} | {:error, RequestError.t()}
   def get_extended_payee_details_list(idaps) do
     prop_getter = fn key -> "./KeyValuePair/Key[text()='#{key}']/../Value/text()" end
     lower_cased = fn str -> "translate(#{str}, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')" end
@@ -210,19 +173,6 @@ defmodule Tipalti.API.Payee do
 
     * `idap`: a payee id
 
-  ## Returns
-
-  `{:ok, map}` where map contains the following fields:
-
-  * name
-  * company_name
-  * alias
-  * address
-  * payment_method
-  * email
-  * payment_terms_id
-  * payment_terms_name
-
   ## Examples
 
         iex> get_payee_details("somepayee")
@@ -239,9 +189,9 @@ defmodule Tipalti.API.Payee do
           }}
 
         iex> get_payee_details("badpayee")
-        {:error, %{error_code: "PayeeUnknown", error_message: "PayeeUnknown"}}
+        {:error, %Tipalti.ClientError{error_code: "PayeeUnknown", error_message: "PayeeUnknown"}}
   """
-  @spec get_payee_details(Tipalti.idap()) :: payee_response()
+  @spec get_payee_details(Tipalti.idap()) :: {:ok, Payee.t()} | {:error, ClientError.t()} | {:error, RequestError.t()}
   def get_payee_details(idap) do
     with {:ok, payee_map} <-
            run("GetPayeeDetails", [idap: idap], [:payer_name, idap, :timestamp], {
@@ -272,17 +222,14 @@ defmodule Tipalti.API.Payee do
 
     * `utc_time`: a UTC DateTime struct
 
-  ## Returns
-
-  `{:ok, refcodes}` where refcodes is a list of invoice reference code strings
-
   ## Examples
 
         iex> {:ok, utc_time, _} = DateTime.from_iso8601("2018-07-01T00:00:00Z")
         iex> get_payee_invoices_changed_since_timestamp(utc_time)
         {:ok, ["12345", "12346", "12347"]}
   """
-  @spec get_payee_invoices_changed_since_timestamp(DateTime.t()) :: payee_response()
+  @spec get_payee_invoices_changed_since_timestamp(DateTime.t()) ::
+          {:ok, [String.t()]} | {:error, ClientError.t()} | {:error, RequestError.t()}
   def get_payee_invoices_changed_since_timestamp(utc_time) do
     timestamp = utc_time |> DateTime.to_unix() |> to_string()
 
@@ -322,13 +269,6 @@ defmodule Tipalti.API.Payee do
   * `idap`: a payee id
   * `amount`: the amount for which you'd want to pay this payee (default: `100.0`)
 
-  ## Returns
-
-  `{:ok, map}` where map contains the following fields:
-
-  * payable - boolean
-  * reason - `nil` or a string for the reason the payee is not payable
-
   ## Examples
 
         iex> payee_payable("payablepayee", 100)
@@ -338,9 +278,10 @@ defmodule Tipalti.API.Payee do
         {:ok, false, "Tax,No PM"}
 
         iex> payee_payable("badpayee", 123.45)
-        {:error, %{error_code: "PayeeUnknown", error_message: "PayeeUnknown"}}
+        {:error, %Tipalti.ClientError{error_code: "PayeeUnknown", error_message: "PayeeUnknown"}}
   """
-  @spec payee_payable(Tipalti.idap(), integer() | float()) :: payee_response()
+  @spec payee_payable(Tipalti.idap(), integer() | float()) ::
+          {:ok, true} | {:ok, false, String.t()} | {:error, ClientError.t()} | {:error, RequestError.t()}
   def payee_payable(idap, amount \\ 100.0) do
     with {:ok, %{payable: payable, reason: reason}} <-
            run(
@@ -369,9 +310,10 @@ defmodule Tipalti.API.Payee do
         {:ok, "No payment method"}
 
         iex> payee_payment_method("badpayee")
-        {:error, %{error_code: "PayeeUnknown", error_message: "PayeeUnknown"}}
+        {:error, %Tipalti.ClientError{error_code: "PayeeUnknown", error_message: "PayeeUnknown"}}
   """
-  @spec payee_payment_method(Tipalti.idap()) :: payee_response()
+  @spec payee_payment_method(Tipalti.idap()) ::
+          {:ok, String.t()} | {:error, ClientError.t()} | {:error, RequestError.t()}
   def payee_payment_method(idap) do
     run(
       "PayeePaymentMethod",
@@ -392,7 +334,8 @@ defmodule Tipalti.API.Payee do
         iex> payee_status_update("somepayee", :blocked, "Business closed")
         :ok
   """
-  @spec payee_status_update(Tipalti.idap(), :active | :suspended | :blocked, String.t() | nil) :: payee_response()
+  @spec payee_status_update(Tipalti.idap(), :active | :suspended | :blocked, String.t() | nil) ::
+          :ok | {:error, ClientError.t()} | {:error, RequestError.t()}
   def payee_status_update(idap, status, reason \\ nil) do
     status_string = status |> Atom.to_string() |> String.capitalize()
 
@@ -456,9 +399,10 @@ defmodule Tipalti.API.Payee do
         :ok
 
         iex> update_or_create_payee_info("invalidname", %{first_name: "José", last_name: "Valim"}, skip_nulls: true, override_payable_country: false)
-        {:error, %{error_code: "ParameterError", error_message: "Invalid payee first name"}}
+        {:error, %Tipalti.ClientError{error_code: "ParameterError", error_message: "Invalid payee first name"}}
   """
-  @spec update_or_create_payee_info(Tipalti.idap(), map(), keyword()) :: payee_response()
+  @spec update_or_create_payee_info(Tipalti.idap(), map(), keyword()) ::
+          :ok | {:error, ClientError.t()} | {:error, RequestError.t()}
   def update_or_create_payee_info(idap, params, opts) do
     with {:ok, skip_nulls} <- get_required_opt(opts, :skip_nulls),
          {:ok, override_payable_country} <- get_required_opt(opts, :override_payable_country) do
