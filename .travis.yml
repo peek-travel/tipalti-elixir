@@ -8,7 +8,7 @@ elixir:
 script:
   - mix compile --warnings-as-errors
   - mix format --check-formatted
-  - mix dialyzer --halt-exit-status
+  # - mix dialyzer --halt-exit-status
   - mix credo
   - mix coveralls.json
 after_script:
