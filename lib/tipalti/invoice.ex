@@ -63,6 +63,20 @@ defmodule Tipalti.Invoice do
 
   @type ref_code :: String.t()
 
+  @type status ::
+          :pending_ap_review
+          | :pending_approval
+          | :pending_ap_action
+          | :pending_payment
+          | :submitted_for_payment
+          | :paid
+          | :disputed
+          | :deleted
+          | :pending_payee_approval
+          | :pending_payee_invoice
+          | :partially_paid
+          | :scheduled_for_payment
+
   @type t :: %__MODULE__{
           idap: Tipalti.idap(),
           ref_code: ref_code(),
@@ -74,7 +88,7 @@ defmodule Tipalti.Invoice do
           internal_notes: String.t() | nil,
           custom_fields: [CustomField.t()],
           is_paid_manually: boolean(),
-          status: String.t(),
+          status: status(),
           approvers: [Approver.t()],
           number: String.t(),
           approval_date: Date.t() | nil,
@@ -116,7 +130,7 @@ defmodule Tipalti.Invoice do
       internal_notes: map[:internal_notes],
       custom_fields: CustomField.from_maps!(map[:custom_fields]),
       is_paid_manually: map[:is_paid_manually],
-      status: map[:status],
+      status: parse_status(map[:status]),
       approvers: Approver.from_maps!(map[:approvers]),
       number: map[:number],
       approval_date: parse_date(map[:approval_date]),
@@ -133,4 +147,18 @@ defmodule Tipalti.Invoice do
   defp parse_date(nil), do: nil
   defp parse_date("0001-01-01T00:00:00"), do: nil
   defp parse_date(date_string), do: date_string |> NaiveDateTime.from_iso8601!() |> NaiveDateTime.to_date()
+
+  @spec parse_status(String.t()) :: atom()
+  defp parse_status("PendingApReview"), do: :pending_ap_review
+  defp parse_status("PendingApproval"), do: :pending_approval
+  defp parse_status("PendingApAction"), do: :pending_ap_action
+  defp parse_status("PendingPayment"), do: :pending_payment
+  defp parse_status("SubmittedForPayment"), do: :submitted_for_payment
+  defp parse_status("Paid"), do: :paid
+  defp parse_status("Disputed"), do: :disputed
+  defp parse_status("Deleted"), do: :deleted
+  defp parse_status("PendingPayeeApproval"), do: :pending_payee_approval
+  defp parse_status("PendingPayeeInvoice"), do: :pending_payee_invoice
+  defp parse_status("PartiallyPaid"), do: :partially_paid
+  defp parse_status("ScheduledForPayment"), do: :scheduled_for_payment
 end

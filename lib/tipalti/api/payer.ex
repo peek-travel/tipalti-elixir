@@ -366,7 +366,7 @@ defmodule Tipalti.API.Payer do
           number: "h6gz1gs2e",
           payer_entity_name: "SomePayee",
           ref_code: "12345",
-          status: "PendingPayment"
+          status: :pending_payment
         },
         %Tipalti.Invoice{
           amount_due: Money.new!(:USD, "10.47"),
@@ -392,7 +392,7 @@ defmodule Tipalti.API.Payer do
           number: "h6gz1grv4",
           payer_entity_name: "SomePayee",
           ref_code: "12346",
-          status: "PendingPayment"
+          status: :pending_payment
         }
       ]}
   """
