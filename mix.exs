@@ -8,7 +8,7 @@ defmodule Tipalti.MixProject do
       app: :tipalti,
       source_url: "https://github.com/peek-travel/tipalti-elixir",
       version: @version,
-      elixir: "~> 1.5",
+      elixir: "~> 1.6",
       description: description(),
       package: package(),
       deps: deps(),
@@ -84,7 +84,7 @@ defmodule Tipalti.MixProject do
     [
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0.0-rc.3", only: [:dev], runtime: false},
-      {:ex_doc, "~> 0.18", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:ex_money, "~> 2.6"},
       {:excoveralls, "~> 0.7", only: :test},
       {:hackney, "~> 1.11"},

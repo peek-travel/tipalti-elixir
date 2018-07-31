@@ -8,11 +8,6 @@ elixir:
   - 1.6
   - 1.7
 
-cache:
-  directories:
-  - _build
-  - deps
-
 script:
   - mix compile --warnings-as-errors
   - mix format --check-formatted
