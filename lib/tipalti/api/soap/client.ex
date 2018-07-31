@@ -4,11 +4,13 @@ defmodule Tipalti.API.SOAP.Client do
   use Tesla
   import Tipalti.Config
   require Logger
+  alias Tipalti.RequestError
 
   adapter Tesla.Adapter.Hackney
 
   plug Tesla.Middleware.Headers, [{"Content-Type", "application/soap+xml; charset=utf-8"}]
 
+  @spec send(Keyword.t(), String.t()) :: {:ok, String.t()} | {:error, RequestError.t()}
   def send(base_urls, payload) do
     url = base_urls[mode()]
     log_request(url, payload)
@@ -23,35 +25,37 @@ defmodule Tipalti.API.SOAP.Client do
         {:error, {:bad_http_response, status}}
 
       {:error, reason} ->
-        Logger.error(fn -> "[Tipalti] request failed: " <> inspect(reason) end)
+        :ok = Logger.error(fn -> "[Tipalti] request failed: " <> inspect(reason) end)
         {:error, {:request_failed, reason}}
     end
   end
 
   defp log_request(url, payload) do
-    Logger.debug(fn ->
-      """
-      [Tipalti] ->> sending payload to #{url}
-      #{payload}
-      """
-    end)
+    :ok =
+      Logger.debug(fn ->
+        """
+        [Tipalti] ->> sending payload to #{url}
+        #{payload}
+        """
+      end)
   end
 
   defp log_response(env) do
-    Logger.debug(fn ->
-      charlist_body = env.body |> String.replace("\"", "\\\"") |> to_charlist()
+    :ok =
+      Logger.debug(fn ->
+        charlist_body = env.body |> String.replace("\"", "\\\"") |> to_charlist()
 
-      pretty_printed_body =
-        try do
-          ('echo "' ++ charlist_body ++ '" | xmllint --format -') |> :os.cmd() |> to_string()
-        rescue
-          _ -> env.body
-        end
+        pretty_printed_body =
+          try do
+            ('echo "' ++ charlist_body ++ '" | xmllint --format -') |> :os.cmd() |> to_string()
+          rescue
+            _ -> env.body
+          end
 
-      """
-      [Tipalti] <<- received #{env.status}
-      #{pretty_printed_body}
-      """
-    end)
+        """
+        [Tipalti] <<- received #{env.status}
+        #{pretty_printed_body}
+        """
+      end)
   end
 end

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap12:Envelope xmlns:soap12="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soap12:Body>
+    <GetPayeeInvoicesChangedSinceTimestamp xmlns="http://Tipalti.org/">
+      <payerName>MyPayer</payerName>
+      <timestamp>1521234048</timestamp>
+      <key>a7cb650086261d5a3a1862cdb4e349ec08d6f070d21dc644f4c3c1ed4d028e3f</key>
+      <changedSince>1530403200</changedSince>
+    </GetPayeeInvoicesChangedSinceTimestamp>
+  </soap12:Body>
+</soap12:Envelope>

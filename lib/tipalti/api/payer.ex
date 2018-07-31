@@ -5,8 +5,10 @@ defmodule Tipalti.API.Payer do
   Details are taken from: <https://api.tipalti.com/v5/PayerFunctions.asmx>
   """
 
-  alias Tipalti.API.SOAP.Client
   import SweetXml, only: [sigil_x: 2]
+
+  alias Tipalti.API.SOAP.Client
+  alias Tipalti.{Invoice, Balance, ClientError, RequestError}
 
   @version "v5"
   @url [
@@ -21,20 +23,35 @@ defmodule Tipalti.API.Payer do
       error_paths: [error_code: ~x"./errorCode/text()"s, error_message: ~x"./errorMessage/text()"os]
     ]
 
-  @typedoc """
-  All Payer API responses are of this form.
+  @doc """
+  Not yet implemented
   """
-  @type payer_response :: {:ok, map()} | {:error, any()}
+  @spec apply_vendor_credit() :: {:error, :not_yet_implemented}
+  def apply_vendor_credit(), do: {:error, :not_yet_implemented}
 
-  # TODO: ApplyVendorCredit
+  @doc """
+  Not yet implemented
+  """
+  @spec create_extended_payee_status_file() :: {:error, :not_yet_implemented}
+  def create_extended_payee_status_file(), do: {:error, :not_yet_implemented}
 
-  # TODO: CreateExtendedPayeeStatusFile
+  @doc """
+  Not yet implemented
+  """
+  @spec create_or_update_custom_fields() :: {:error, :not_yet_implemented}
+  def create_or_update_custom_fields(), do: {:error, :not_yet_implemented}
 
-  # TODO: CreateOrUpdateCustomFields
+  @doc """
+  Not yet implemented
+  """
+  @spec create_or_update_gl_accounts() :: {:error, :not_yet_implemented}
+  def create_or_update_gl_accounts(), do: {:error, :not_yet_implemented}
 
-  # TODO: CreateOrUpdateGLAccounts
-
-  # TODO: CreateOrUpdateGrns
+  @doc """
+  Not yet implemented
+  """
+  @spec create_or_update_grns() :: {:error, :not_yet_implemented}
+  def create_or_update_grns(), do: {:error, :not_yet_implemented}
 
   @typedoc """
   An invoice approver, used when creating invoices in `create_or_update_invoices/1`.
@@ -131,29 +148,28 @@ defmodule Tipalti.API.Payer do
 
   ## Returns
 
-  `{:ok, map}` where map contains the following fields:
+  `{:ok, list}` where list is a list of maps contains the following fields:
 
-  * `invoice_results`: List of invoice results
-    * `error_message`: String; if there was an error creating the invoice.
-    * `ref_code`: String; corresponds to the input invoices.
-    * `succeeded`: Boolean; Indicates if creating the invoice succeeded.
+  * `error_message`: String; if there was an error creating the invoice.
+  * `ref_code`: String; corresponds to the input invoices.
+  * `succeeded`: Boolean; Indicates if creating the invoice succeeded.
 
   ## Examples
 
       iex> create_or_update_invoices([%{idap: "somepayee", ref_code: "testinvoice1", due_date: "2018-05-01", date: "2018-06-01", subject: "test invoice 1", currency: "USD", line_items: [%{amount: "100.00", description: "test line item"}]}, %{idap: "somepayee", ref_code: "testinvoice2", due_date: "2018-06-01", date: "2018-05-01", subject: "test invoice 2", currency: "USD", line_items: [%{amount: "100.00", description: "test line item"}]}])
       {:ok,
-       %{
-         invoice_results: [
-           %{
-             error_message: "Due date cannot be earlier then invoice date",
-             ref_code: "testinvoice1",
-             succeeded: false
-           },
-           %{error_message: nil, ref_code: "testinvoice2", succeeded: true}
-         ]
-       }}
+      [
+        %{
+          error_message: "Due date cannot be earlier then invoice date",
+          ref_code: "testinvoice1",
+          succeeded: false
+        },
+        %{error_message: nil, ref_code: "testinvoice2", succeeded: true}
+      ]}
   """
-  @spec create_or_update_invoices([invoice()]) :: payer_response()
+  @spec create_or_update_invoices([invoice()]) ::
+          {:ok, [%{error_message: String.t() | nil, ref_code: String.t(), succeeded: boolean()}]}
+          | {:error, RequestError.t()}
   def create_or_update_invoices(invoices) do
     payload =
       RequestBuilder.build(
@@ -220,7 +236,7 @@ defmodule Tipalti.API.Payer do
         ResponseParser.parse_without_errors(
           body,
           ~x"//CreateOrUpdateInvoicesResult",
-          invoice_results: [
+          [
             ~x"./InvoiceErrors/TipaltiInvoiceItemResult"l,
             error_message: ~x"./ErrorMessage/text()"os,
             succeeded: ~x"./Succeeded/text()"b,
@@ -236,11 +252,23 @@ defmodule Tipalti.API.Payer do
   defp optional_list([], _), do: nil
   defp optional_list(items, fun), do: Enum.map(items, fun)
 
-  # TODO: CreateOrUpdatePurchaseOrders
+  @doc """
+  Not yet implemented
+  """
+  @spec create_or_update_purchase_orders() :: {:error, :not_yet_implemented}
+  def create_or_update_purchase_orders(), do: {:error, :not_yet_implemented}
 
-  # TODO: CreatePayeeStatusFile
+  @doc """
+  Not yet implemented
+  """
+  @spec create_payee_status_file() :: {:error, :not_yet_implemented}
+  def create_payee_status_file(), do: {:error, :not_yet_implemented}
 
-  # TODO: CreatePaymentOrdersReport
+  @doc """
+  Not yet implemented
+  """
+  @spec create_payment_orders_report() :: {:error, :not_yet_implemented}
+  def create_payment_orders_report(), do: {:error, :not_yet_implemented}
 
   @doc """
   Get balances in your accounts.
@@ -252,79 +280,290 @@ defmodule Tipalti.API.Payer do
 
       iex> get_balances()
       {:ok,
-        %{
-          account_infos: [
-            %{
-              account_identifier: "1234",
-              balance: "1000",
-              currency: "USD",
-              provider: "Tipalti"
-            }
-          ]
-        }}
+      [
+        %Tipalti.Balance{
+          account_identifier: "1234",
+          balance: Money.new("USD", "1000"),
+          provider: "Tipalti"
+        }
+      ]}
   """
-  @spec get_balances() :: payer_response()
+  @spec get_balances() :: {:ok, [Tipalti.Balance.t()]} | {:error, ClientError.t()} | {:error, RequestError.t()}
   def get_balances do
-    run(
-      "GetBalances",
-      [],
-      [:payer_name, :timestamp],
-      {
-        ~x"//GetBalancesResult",
-        account_infos: [
-          ~x"./AccountInfos/TipaltiAccountInfo"l,
-          provider: ~x"./Provider/text()"os,
-          account_identifier: ~x"./AccountIdentifier/text()"os,
-          balance: ~x"./Balance/text()"os,
-          currency: ~x"./Currency/text()"os
-        ]
-      },
-      ok_code: 0,
-      error_paths: [error_code: ~x"./errorCode/text()"i, error_message: ~x"./errorMessage/text()"os]
-    )
+    with {:ok, balances_maps} <-
+           run(
+             "GetBalances",
+             [],
+             [:payer_name, :timestamp],
+             {
+               ~x"//GetBalancesResult",
+               [
+                 ~x"./AccountInfos/TipaltiAccountInfo"l,
+                 provider: ~x"./Provider/text()"os,
+                 account_identifier: ~x"./AccountIdentifier/text()"os,
+                 balance: ~x"./Balance/text()"os,
+                 currency: ~x"./Currency/text()"os
+               ]
+             },
+             ok_code: 0,
+             error_paths: [error_code: ~x"./errorCode/text()"i, error_message: ~x"./errorMessage/text()"os]
+           ) do
+      {:ok, Balance.from_maps!(balances_maps)}
+    end
   end
 
-  # TODO: GetCustomFields
+  @doc """
+  Not yet implemented
+  """
+  @spec get_custom_fields() :: {:error, :not_yet_implemented}
+  def get_custom_fields(), do: {:error, :not_yet_implemented}
 
-  # TODO: GetDynamicKey
+  @doc """
+  Not yet implemented
+  """
+  @spec get_dynamic_key() :: {:error, :not_yet_implemented}
+  def get_dynamic_key(), do: {:error, :not_yet_implemented}
 
-  # TODO: GetDynamicKeyOfSubPayer
+  @doc """
+  Not yet implemented
+  """
+  @spec get_dynamic_key_of_sub_payer() :: {:error, :not_yet_implemented}
+  def get_dynamic_key_of_sub_payer(), do: {:error, :not_yet_implemented}
 
-  # TODO: GetPayeeInvoicesListDetails
+  @doc """
+  Return list of payee invoices.
 
-  # TODO: GetPayerFees
+  ## Parameters
 
-  # TODO: GetProcessingRequestStatus
+    * `invoice_ref_codes`: list of invoice reference codes
 
-  # TODO: GetProviderAccounts
+  ## Examples
 
-  # TODO: GetUpdatedPayments
+      iex> get_payee_invoices_list_details(["12345","12346"])
+      {:ok,
+      [
+        %Tipalti.Invoice{
+          amount_due: Money.new!(:USD, "3.61"),
+          approval_date: nil,
+          approvers: [],
+          can_approve: false,
+          custom_fields: [],
+          date: ~D[2018-07-23],
+          description: "Some invoice",
+          due_date: ~D[2018-07-27],
+          idap: "payee1",
+          internal_notes: "Notes",
+          is_paid_manually: false,
+          line_items: [
+            %Tipalti.Invoice.Line{
+              amount: Money.new!(:USD, "3.61"),
+              custom_fields: [],
+              description: "Charges",
+              line_type: nil,
+              quantity: nil
+            }
+          ],
+          number: "h6gz1gs2e",
+          payer_entity_name: "SomePayee",
+          ref_code: "12345",
+          status: :pending_payment
+        },
+        %Tipalti.Invoice{
+          amount_due: Money.new!(:USD, "10.47"),
+          approval_date: nil,
+          approvers: [],
+          can_approve: false,
+          custom_fields: [],
+          date: ~D[2018-07-18],
+          description: "Some other invoice",
+          due_date: ~D[2018-07-20],
+          idap: "payee2",
+          internal_notes: "Notes notes notes",
+          is_paid_manually: false,
+          line_items: [
+            %Tipalti.Invoice.Line{
+              amount: Money.new!(:USD, "10.47"),
+              custom_fields: [],
+              description: "Charges",
+              line_type: nil,
+              quantity: nil
+            }
+          ],
+          number: "h6gz1grv4",
+          payer_entity_name: "SomePayee",
+          ref_code: "12346",
+          status: :pending_payment
+        }
+      ]}
+  """
+  @spec get_payee_invoices_list_details([Invoice.ref_code()]) ::
+          {:ok, [Invoice.t()]} | {:error, ClientError.t()} | {:error, RequestError.t()}
+  def get_payee_invoices_list_details(invoice_ref_codes) do
+    with {:ok, %{errors: _errors, invoices: invoice_maps}} <-
+           run(
+             "GetPayeeInvoicesListDetails",
+             [invoicesRefCodes: Enum.map(invoice_ref_codes, fn ref_code -> [string: ref_code] end)],
+             [:payer_name, :timestamp],
+             {
+               ~x"//GetPayeeInvoicesListDetailsResult",
+               errors: [
+                 ~x"./InvoiceErrors/TipaltiInvoiceItemError"l,
+                 error_message: ~x"./ErrorMessage/text()"s,
+                 error_code: ~x"./ErrorCode/text()"s,
+                 ref_code: ~x"./InvoiceRefCode/text()"s
+               ],
+               invoices: [
+                 ~x"./Invoices/TipaltiInvoiceItemResponse"l,
+                 idap: ~x"./Idap/text()"s,
+                 ref_code: ~x"./InvoiceRefCode/text()"s,
+                 date: ~x"./InvoiceDate/text()"s,
+                 due_date: ~x"./InvoiceDueDate/text()"s,
+                 line_items: [
+                   ~x"./InvoiceLines/InvoiceLine"l,
+                   currency: ~x"./Currency/text()"s,
+                   amount: ~x"./Amount/text()"s,
+                   description: ~x"./Description/text()"s,
+                   custom_fields: [
+                     ~x"./CustomFields/KeyValuePair"l,
+                     key: ~x"./Key/text()"os,
+                     value: ~x"./Value/text()"os
+                   ],
+                   line_type: ~x"./LineType/text()"os,
+                   quantity: ~x"./Quantity/text()"oi
+                 ],
+                 description: ~x"./Description/text()"s,
+                 can_approve: ~x"./CanApprove/text()"b,
+                 internal_notes: ~x"./InvoiceInternalNotes/text()"s,
+                 custom_fields: [
+                   ~x"./CustomFields/KeyValuePair"l,
+                   key: ~x"./Key/text()"os,
+                   value: ~x"./Value/text()"os
+                 ],
+                 is_paid_manually: ~x"./IsPaidManually/text()"b,
+                 status: ~x"./InvoiceStatus/text()"s,
+                 currency: ~x"./Currency/text()"s,
+                 approvers: [
+                   ~x"./Approvers/TipaltiInvoiceApprover"l,
+                   name: ~x"./Name/text()"s,
+                   email: ~x"./Email/text()"s,
+                   order: ~x"./Order/text()"oi
+                 ],
+                 number: ~x"./InvoiceNumber/text()"s,
+                 approval_date: ~x"./ApprovalDate/text()"s,
+                 payer_entity_name: ~x"./PayerEntityName/text()"s,
+                 amount_due: ~x"./AmountDue/text()"s
+               ]
+             }
+           ) do
+      {:ok, Invoice.from_maps!(invoice_maps)}
+    end
+  end
 
-  # TODO: LogIntegrationError
+  @doc """
+  Not yet implemented
+  """
+  @spec get_payer_fees() :: {:error, :not_yet_implemented}
+  def get_payer_fees(), do: {:error, :not_yet_implemented}
 
-  # TODO: ProcessMultiCurrencyPaymentFile
+  @doc """
+  Not yet implemented
+  """
+  @spec get_processing_request_status() :: {:error, :not_yet_implemented}
+  def get_processing_request_status(), do: {:error, :not_yet_implemented}
 
-  # TODO: ProcessMultiCurrencyPaymentFileAsync
+  @doc """
+  Not yet implemented
+  """
+  @spec get_provider_accounts() :: {:error, :not_yet_implemented}
+  def get_provider_accounts(), do: {:error, :not_yet_implemented}
 
-  # TODO: ProcessPaymentFile
+  @doc """
+  Not yet implemented
+  """
+  @spec get_updated_payments() :: {:error, :not_yet_implemented}
+  def get_updated_payments(), do: {:error, :not_yet_implemented}
 
-  # TODO: ProcessPaymentFileAsync
+  @doc """
+  Not yet implemented
+  """
+  @spec log_integration_error() :: {:error, :not_yet_implemented}
+  def log_integration_error(), do: {:error, :not_yet_implemented}
 
-  # TODO: ProcessPayments
+  @doc """
+  Not yet implemented
+  """
+  @spec process_multi_currency_payment_file() :: {:error, :not_yet_implemented}
+  def process_multi_currency_payment_file(), do: {:error, :not_yet_implemented}
 
-  # TODO: ProcessPaymentsAsync
+  @doc """
+  Not yet implemented
+  """
+  @spec process_multi_currency_payment_file_async() :: {:error, :not_yet_implemented}
+  def process_multi_currency_payment_file_async(), do: {:error, :not_yet_implemented}
 
-  # TODO: ProcessPaymentsAsyncResult
+  @doc """
+  Not yet implemented
+  """
+  @spec process_payment_file() :: {:error, :not_yet_implemented}
+  def process_payment_file(), do: {:error, :not_yet_implemented}
 
-  # TODO: TestMultiCurrencyPaymentFile
+  @doc """
+  Not yet implemented
+  """
+  @spec process_payment_file_async() :: {:error, :not_yet_implemented}
+  def process_payment_file_async(), do: {:error, :not_yet_implemented}
 
-  # TODO: TestMultiCurrencyPaymentFileAsync
+  @doc """
+  Not yet implemented
+  """
+  @spec process_payments() :: {:error, :not_yet_implemented}
+  def process_payments(), do: {:error, :not_yet_implemented}
 
-  # TODO: TestPaymentFile
+  @doc """
+  Not yet implemented
+  """
+  @spec process_payments_async() :: {:error, :not_yet_implemented}
+  def process_payments_async(), do: {:error, :not_yet_implemented}
 
-  # TODO: TestPaymentFileAsync
+  @doc """
+  Not yet implemented
+  """
+  @spec process_payments_async_result() :: {:error, :not_yet_implemented}
+  def process_payments_async_result(), do: {:error, :not_yet_implemented}
 
-  # TODO: TestPayments
+  @doc """
+  Not yet implemented
+  """
+  @spec test_multi_currency_payment_file() :: {:error, :not_yet_implemented}
+  def test_multi_currency_payment_file(), do: {:error, :not_yet_implemented}
 
-  # TODO: TestPaymentsAsync
+  @doc """
+  Not yet implemented
+  """
+  @spec test_multi_currency_payment_file_async() :: {:error, :not_yet_implemented}
+  def test_multi_currency_payment_file_async(), do: {:error, :not_yet_implemented}
+
+  @doc """
+  Not yet implemented
+  """
+  @spec test_payment_file() :: {:error, :not_yet_implemented}
+  def test_payment_file(), do: {:error, :not_yet_implemented}
+
+  @doc """
+  Not yet implemented
+  """
+  @spec test_payment_file_async() :: {:error, :not_yet_implemented}
+  def test_payment_file_async(), do: {:error, :not_yet_implemented}
+
+  @doc """
+  Not yet implemented
+  """
+  @spec test_payments() :: {:error, :not_yet_implemented}
+  def test_payments(), do: {:error, :not_yet_implemented}
+
+  @doc """
+  Not yet implemented
+  """
+  @spec test_payments_async() :: {:error, :not_yet_implemented}
+  def test_payments_async(), do: {:error, :not_yet_implemented}
 end
