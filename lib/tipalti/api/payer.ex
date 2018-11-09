@@ -82,11 +82,11 @@ defmodule Tipalti.API.Payer do
   An invoice, used when creating invoices in `create_or_update_invoices/1`.
   """
   @type invoice :: %{
-          required(:can_approve) => boolean(),
           required(:date) => String.t(),
           required(:idap) => Tipalti.idap(),
-          required(:is_paid_manually) => boolean(),
           required(:subject) => String.t(),
+          optional(:can_approve) => boolean(),
+          optional(:is_paid_manually) => boolean(),
           optional(:ap_account_number) => String.t(),
           optional(:approvers) => [invoice_approver()],
           optional(:currency) => String.t(),

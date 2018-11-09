@@ -56,20 +56,20 @@ defmodule Tipalti.IFrame.SetupProcess do
   """
   @type t :: %__MODULE__{
           idap: Tipalti.idap(),
-          country: String.t(),
-          first: String.t(),
-          middle: String.t(),
-          last: String.t(),
-          company: String.t(),
-          uiculture: String.t(),
-          street1: String.t(),
-          street2: String.t(),
-          city: String.t(),
-          zip: String.t(),
-          state: String.t(),
-          alias: String.t(),
-          email: String.t(),
-          preferred_payer_entity: String.t()
+          country: String.t() | nil,
+          first: String.t() | nil,
+          middle: String.t() | nil,
+          last: String.t() | nil,
+          company: String.t() | nil,
+          uiculture: String.t() | nil,
+          street1: String.t() | nil,
+          street2: String.t() | nil,
+          city: String.t() | nil,
+          zip: String.t() | nil,
+          state: String.t() | nil,
+          alias: String.t() | nil,
+          email: String.t() | nil,
+          preferred_payer_entity: String.t() | nil
         }
 
   @enforce_keys [:idap]
