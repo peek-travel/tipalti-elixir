@@ -148,7 +148,7 @@ defmodule Tipalti.Invoice do
   defp parse_date("0001-01-01T00:00:00"), do: nil
   defp parse_date(date_string), do: date_string |> NaiveDateTime.from_iso8601!() |> NaiveDateTime.to_date()
 
-  @spec parse_status(String.t()) :: atom()
+  @spec parse_status(String.t()) :: status()
   defp parse_status("PendingApReview"), do: :pending_ap_review
   defp parse_status("PendingApproval"), do: :pending_approval
   defp parse_status("PendingApAction"), do: :pending_ap_action

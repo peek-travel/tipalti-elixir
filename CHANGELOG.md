@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased][]
 
+## [0.5.1][] - 2018-11-12
+### Fixed
+-   Overly restrictive dialyzer typespecs
+
 ## [0.5.0][] - 2018-07-31
 ### Added
 -   Payee API function: get_payee_invoices_changed_since_timestamp
@@ -38,7 +42,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## 0.1.0 - 2018-04-26
 ### Initial release
 
-[Unreleased]: https://github.com/peek-travel/tipalti-elixir/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/peek-travel/tipalti-elixir/compare/0.5.1...HEAD
+[0.5.1]: https://github.com/peek-travel/tipalti-elixir/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/peek-travel/tipalti-elixir/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/peek-travel/tipalti-elixir/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/peek-travel/tipalti-elixir/compare/0.2.0...0.3.0

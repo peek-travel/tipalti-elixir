@@ -16,7 +16,7 @@ The package can be installed by adding `tipalti` to your list of dependencies in
 ```elixir
 def deps do
   [
-    {:tipalti, "~> 0.5.0"}
+    {:tipalti, "~> 0.5.1"}
   ]
 end
 ```
