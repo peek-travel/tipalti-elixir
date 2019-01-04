@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased][]
 
+## [0.7.0][] - 2019-01-04
+### Changed
+-   Update ex_money version to allow 3.1.
+
 ## [0.6.0][] - 2018-11-14
 ### Added
 -   Configurable hackney recv_timeout with a default of 60 seconds.
@@ -46,7 +50,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## 0.1.0 - 2018-04-26
 ### Initial release
 
-[Unreleased]: https://github.com/peek-travel/tipalti-elixir/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/peek-travel/tipalti-elixir/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/peek-travel/tipalti-elixir/compare/0.5.1...0.6.0
 [0.6.0]: https://github.com/peek-travel/tipalti-elixir/compare/0.5.1...0.6.0
 [0.5.1]: https://github.com/peek-travel/tipalti-elixir/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/peek-travel/tipalti-elixir/compare/0.4.0...0.5.0
