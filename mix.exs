@@ -14,7 +14,8 @@ defmodule Tipalti.MixProject do
       deps: deps(),
       docs: docs(),
       dialyzer: [
-        ignore_warnings: ".dialyzer_ignore.exs",
+        plt_add_deps: :project,
+        plt_add_apps: [:decimal, :xmerl],
         flags: [:unmatched_returns, :error_handling, :underspecs]
       ],
       test_coverage: [tool: ExCoveralls],
