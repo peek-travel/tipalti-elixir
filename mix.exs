@@ -63,6 +63,7 @@ defmodule Tipalti.MixProject do
       extras: ["README.md", "LICENSE.md"],
       groups_for_modules: [
         API: [Tipalti.API.Payee, Tipalti.API.Payer],
+        IPN: [Tipalti.IPN.Router],
         IFrames: [Tipalti.IFrame.InvoiceHistory, Tipalti.IFrame.PaymentsHistory, Tipalti.IFrame.SetupProcess],
         "Data types": [
           Tipalti.Balance,
@@ -91,6 +92,8 @@ defmodule Tipalti.MixProject do
       {:hackney, "~> 1.11"},
       {:inch_ex, ">= 0.0.0", only: :docs},
       {:inflex, "~> 1.10"},
+      {:mox, "~> 0.5", only: :test},
+      {:plug, "~> 1.6 or ~> 1.7"},
       {:tesla, "~> 1.0"},
       {:xml_builder, "~> 2.1"}
     ]
