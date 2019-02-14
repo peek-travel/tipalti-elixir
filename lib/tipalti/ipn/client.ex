@@ -12,6 +12,7 @@ defmodule Tipalti.IPN.Client do
     @callback ack(String.t()) :: :ok | {:error, RequestError.t() | :bad_ipn}
   end
 
+  # NOTE: the `client_recv_timeout` is configurable, but set at compile time
   adapter Tesla.Adapter.Hackney, recv_timeout: Application.get_env(:tipalti, :client_recv_timeout, 60_000)
 
   plug Tesla.Middleware.Headers, [{"Content-Type", "application/x-www-form-urlencoded"}]
