@@ -84,7 +84,7 @@ defmodule Tipalti.IPN.Router do
       {:ok, body, conn} ->
         event_params = Conn.Query.decode(body)
 
-        case module.call(event_params) do
+        case handle_event(module, event_params) do
           :ok ->
             ack!(body)
 
@@ -107,6 +107,31 @@ defmodule Tipalti.IPN.Router do
     end
   end
 
+  defp handle_event(module, %{"type" => type} = event) when type in ~w(
+    bill_updated
+    completed
+    deferred
+    error
+    payee_compliance_document_closed
+    payee_compliance_document_request
+    payee_compliance_screening_result
+    payee_details_changed
+    payee_invoices_sync_now
+    payer_fees
+    payment_cancelled
+    payment_submitted
+    payments_group_approved
+    payments_group_declined
+  ) do
+    module.call(event)
+  end
+
+  defp handle_event(_, event) do
+    Logger.warn("[Tipalti IPN] Invalid event received: #{inspect(event)}")
+
+    :ok
+  end
+
   defp ack!(body) do
     client = Application.get_env(:tipalti, :ipn_client_module, IPN.Client)
 
@@ -115,7 +140,7 @@ defmodule Tipalti.IPN.Router do
         :ok
 
       {:error, :bad_ipn} ->
-        :ok = Logger.warn("Invalid IPN received")
+        :ok = Logger.warn("[Tipalti IPN] Invalid IPN received")
         :ok
 
       error ->
