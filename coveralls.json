@@ -1,5 +1,6 @@
 {
   "skip_files": [
+    "test",
     "lib/sweet_xml",
     "lib/tipalti/api/soap/client",
     "lib/tipalti/ipn/client"
