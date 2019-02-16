@@ -8,6 +8,7 @@ This library includes:
 
 * Payee and Payer SOAP API clients
 * iFrame integration helpers
+* IPN Router builder
 
 > **NOTE**: Not all API functions have been implemented yet; this library is a work in progress.
 
