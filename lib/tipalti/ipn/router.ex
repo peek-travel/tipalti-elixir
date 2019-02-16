@@ -127,8 +127,7 @@ defmodule Tipalti.IPN.Router do
   end
 
   defp handle_event(_, event) do
-    Logger.warn("[Tipalti IPN] Invalid event received: #{inspect(event)}")
-
+    :ok = Logger.warn("[Tipalti IPN] Invalid event received: #{inspect(event)}")
     :ok
   end
 

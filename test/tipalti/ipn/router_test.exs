@@ -6,7 +6,7 @@ defmodule Tipalti.IPN.RouterTest do
 
   defmodule SuccessfulHandler do
     def call(event) do
-      assert event == %{"foo" => "bar", "bar" => "baz"}
+      assert event == %{"bill_refcode" => "pi_12345", "bill_status" => "Paid", "type" => "bill_updated"}
       :ok
     end
   end
@@ -29,11 +29,14 @@ defmodule Tipalti.IPN.RouterTest do
     on "bill_updated", FailingHandler
   end
 
+  @good_event "type=bill_updated&bill_refcode=pi_12345&bill_status=Paid"
+  @bad_event "type=foo"
+
   test "handles successful calls" do
     expect(BodyReaderMock, :read_body, fn conn, opts -> Plug.Conn.read_body(conn, opts) end)
     expect(IPNClientMock, :ack, fn _ -> :ok end)
 
-    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", "foo=bar&bar=baz")
+    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
     conn = SuccessfulRouter.call(conn, [])
 
     assert conn.resp_body == "OK"
@@ -44,7 +47,7 @@ defmodule Tipalti.IPN.RouterTest do
     expect(BodyReaderMock, :read_body, fn conn, opts -> Plug.Conn.read_body(conn, opts) end)
     expect(IPNClientMock, :ack, fn _ -> :ok end)
 
-    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", "foo=bar&bar=baz")
+    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
 
     assert_raise RuntimeError, "Unable to process IPN: {:error, :something_bad}", fn ->
       FailingRouter.call(conn, [])
@@ -55,7 +58,7 @@ defmodule Tipalti.IPN.RouterTest do
     expect(BodyReaderMock, :read_body, fn conn, opts -> Plug.Conn.read_body(conn, opts) end)
     expect(IPNClientMock, :ack, fn _ -> {:error, :unknown} end)
 
-    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", "foo=bar&bar=baz")
+    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
 
     assert_raise RuntimeError, "Unable to ack IPN: {:error, :unknown}", fn ->
       SuccessfulRouter.call(conn, [])
@@ -66,21 +69,35 @@ defmodule Tipalti.IPN.RouterTest do
     expect(BodyReaderMock, :read_body, fn conn, opts -> Plug.Conn.read_body(conn, opts) end)
     expect(IPNClientMock, :ack, fn _ -> {:error, :bad_ipn} end)
 
-    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", "foo=bar&bar=baz")
+    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
 
     assert capture_log(fn ->
              conn = SuccessfulRouter.call(conn, [])
 
              assert conn.resp_body == "OK"
              assert conn.status == 200
-           end) =~ "[warn]  Invalid IPN received"
+           end) =~ "Invalid IPN received"
+  end
+
+  test "logs a warning if an unknown event type is received" do
+    expect(BodyReaderMock, :read_body, fn conn, opts -> Plug.Conn.read_body(conn, opts) end)
+    expect(IPNClientMock, :ack, fn _ -> :ok end)
+
+    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @bad_event)
+
+    assert capture_log(fn ->
+             conn = SuccessfulRouter.call(conn, [])
+
+             assert conn.resp_body == "OK"
+             assert conn.status == 200
+           end) =~ "Invalid event received"
   end
 
   test "raises BadRequestError on bad body" do
     expect(BodyReaderMock, :read_body, fn _conn, _opts -> {:error, :invalid_body} end)
     expect(IPNClientMock, :ack, fn _ -> :ok end)
 
-    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", "foo=bar&bar=baz")
+    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
 
     assert_raise Plug.BadRequestError, fn ->
       SuccessfulRouter.call(conn, [])
@@ -91,7 +108,7 @@ defmodule Tipalti.IPN.RouterTest do
     expect(BodyReaderMock, :read_body, fn conn, _opts -> {:more, "", conn} end)
     expect(IPNClientMock, :ack, fn _ -> :ok end)
 
-    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", "foo=bar&bar=baz")
+    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
 
     assert_raise Plug.BadRequestError, fn ->
       SuccessfulRouter.call(conn, [])
@@ -102,7 +119,7 @@ defmodule Tipalti.IPN.RouterTest do
     expect(BodyReaderMock, :read_body, fn _conn, _opts -> {:error, :timeout} end)
     expect(IPNClientMock, :ack, fn _ -> :ok end)
 
-    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", "foo=bar&bar=baz")
+    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
 
     assert_raise Plug.TimeoutError, fn ->
       SuccessfulRouter.call(conn, [])
