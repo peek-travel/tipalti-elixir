@@ -6,6 +6,7 @@ defmodule Tipalti.API.SOAP.Client do
   require Logger
   alias Tipalti.RequestError
 
+  # NOTE: the `client_recv_timeout` is configurable, but set at compile time
   adapter Tesla.Adapter.Hackney, recv_timeout: Application.get_env(:tipalti, :client_recv_timeout, 60_000)
 
   plug Tesla.Middleware.Headers, [{"Content-Type", "application/soap+xml; charset=utf-8"}]

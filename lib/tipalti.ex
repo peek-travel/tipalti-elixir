@@ -6,6 +6,7 @@ defmodule Tipalti do
 
   *   `Tipalti.API.Payee` - Payee SOAP API client
   *   `Tipalti.API.Payer` - Payer SOAP API client
+  *   `Tipalti.IPN.Router` - Router builder Tipalti Instant Payment Notifications (IPN)
   *   `Tipalti.IFrame.InvoiceHistory` - Invoice History iFrame integration helper
   *   `Tipalti.IFrame.PaymentsHistory` - Payments History iFrame integration helper
   *   `Tipalti.IFrame.SetupProcess` - Setup Process iFrame integration helper
