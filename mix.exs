@@ -1,7 +1,7 @@
 defmodule Tipalti.MixProject do
   use Mix.Project
 
-  @version "0.8.1"
+  @version "0.8.2"
 
   def project do
     [
@@ -49,7 +49,7 @@ defmodule Tipalti.MixProject do
 
   defp package do
     [
-      files: ["lib", "mix.exs", "README.md", "LICENSE.md"],
+      files: ["lib", "mix.exs", "README.md", "LICENSE.md", ".formatter.exs"],
       maintainers: ["Chris Dosé"],
       licenses: ["MIT"],
       links: %{

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased][]
 
+## [0.8.2][] - 2019-02-19
+
+### Fixed
+
+- Include `.formatter.exs` in hex package
+
 ## [0.8.1][] - 2019-02-19
 
 ### Fixed
@@ -79,7 +85,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Initial release
 
-[Unreleased]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.1...HEAD
+[Unreleased]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.2...HEAD
+[0.8.2]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.1...0.8.2
 [0.8.1]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.0...0.8.1
 [0.8.0]: https://github.com/peek-travel/tipalti-elixir/compare/0.7.0...0.8.0
 [0.7.0]: https://github.com/peek-travel/tipalti-elixir/compare/0.6.0...0.7.0
