@@ -126,6 +126,7 @@ defmodule Tipalti.IPN.Router do
     payments_group_approved
     payments_group_declined
   ) do
+    :ok = Logger.info("[Tipalti IPN] Event received: #{inspect(event)}")
     module.call(event)
   end
 
