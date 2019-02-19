@@ -107,6 +107,9 @@ defmodule Tipalti.IPN.Router do
     end
   end
 
+  # Tipalti sometimes sends type "bills" even though their documentation says it should be "bill_updated"
+  defp handle_event(module, %{"type" => "bills"} = event), do: handle_event(module, %{event | "type" => "bill_updated"})
+
   defp handle_event(module, %{"type" => type} = event) when type in ~w(
     bill_updated
     completed
@@ -123,6 +126,7 @@ defmodule Tipalti.IPN.Router do
     payments_group_approved
     payments_group_declined
   ) do
+    :ok = Logger.info("[Tipalti IPN] Event received: #{inspect(event)}")
     module.call(event)
   end
 

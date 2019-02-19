@@ -30,6 +30,7 @@ defmodule Tipalti.IPN.RouterTest do
   end
 
   @good_event "type=bill_updated&bill_refcode=pi_12345&bill_status=Paid"
+  @weird_event "type=bills&bill_refcode=pi_12345&bill_status=Paid"
   @bad_event "type=foo"
 
   test "handles successful calls" do
@@ -37,10 +38,25 @@ defmodule Tipalti.IPN.RouterTest do
     expect(IPNClientMock, :ack, fn _ -> :ok end)
 
     conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
-    conn = SuccessfulRouter.call(conn, [])
 
-    assert conn.resp_body == "OK"
-    assert conn.status == 200
+    assert capture_log(fn ->
+             conn = SuccessfulRouter.call(conn, [])
+             assert conn.resp_body == "OK"
+             assert conn.status == 200
+           end) =~ "Event received"
+  end
+
+  test "translates events with type \"bills\" to type \"bill_update\"" do
+    expect(BodyReaderMock, :read_body, fn conn, opts -> Plug.Conn.read_body(conn, opts) end)
+    expect(IPNClientMock, :ack, fn _ -> :ok end)
+
+    conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @weird_event)
+
+    assert capture_log(fn ->
+             conn = SuccessfulRouter.call(conn, [])
+             assert conn.resp_body == "OK"
+             assert conn.status == 200
+           end) =~ "Event received"
   end
 
   test "handles errors from the handler" do
@@ -50,7 +66,9 @@ defmodule Tipalti.IPN.RouterTest do
     conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
 
     assert_raise RuntimeError, "Unable to process IPN: {:error, :something_bad}", fn ->
-      FailingRouter.call(conn, [])
+      assert capture_log(fn ->
+               FailingRouter.call(conn, [])
+             end) =~ "Event received"
     end
   end
 
@@ -61,7 +79,9 @@ defmodule Tipalti.IPN.RouterTest do
     conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
 
     assert_raise RuntimeError, "Unable to ack IPN: {:error, :unknown}", fn ->
-      SuccessfulRouter.call(conn, [])
+      assert capture_log(fn ->
+               SuccessfulRouter.call(conn, [])
+             end) =~ "Event received"
     end
   end
 
