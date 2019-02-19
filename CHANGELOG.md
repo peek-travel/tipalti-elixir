@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased][]
 
+## [0.8.1][] - 2019-02-19
+
+### Fixed
+
+- Tipalti IPN events with type "bills" are translated to type "bill_updated"
+
 ## [0.8.0][] - 2019-02-15
 
 ### Added
@@ -73,7 +79,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Initial release
 
-[Unreleased]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.0...HEAD
+[Unreleased]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.1...HEAD
+[0.8.1]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.0...0.8.1
 [0.8.0]: https://github.com/peek-travel/tipalti-elixir/compare/0.7.0...0.8.0
 [0.7.0]: https://github.com/peek-travel/tipalti-elixir/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/peek-travel/tipalti-elixir/compare/0.5.1...0.6.0
