@@ -65,7 +65,7 @@ defmodule Tipalti.IPN.RouterTest do
 
     conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
 
-    assert_raise RuntimeError, "Unable to process IPN: {:error, :something_bad}", fn ->
+    assert_raise Plug.Conn.WrapperError, "** (RuntimeError) Unable to process IPN: {:error, :something_bad}", fn ->
       assert capture_log(fn ->
                FailingRouter.call(conn, [])
              end) =~ "Event received"
@@ -78,7 +78,7 @@ defmodule Tipalti.IPN.RouterTest do
 
     conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
 
-    assert_raise RuntimeError, "Unable to ack IPN: {:error, :unknown}", fn ->
+    assert_raise Plug.Conn.WrapperError, "** (RuntimeError) Unable to ack IPN: {:error, :unknown}", fn ->
       assert capture_log(fn ->
                SuccessfulRouter.call(conn, [])
              end) =~ "Event received"
@@ -119,9 +119,11 @@ defmodule Tipalti.IPN.RouterTest do
 
     conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
 
-    assert_raise Plug.BadRequestError, fn ->
-      SuccessfulRouter.call(conn, [])
-    end
+    assert_raise Plug.Conn.WrapperError,
+                 "** (Plug.BadRequestError) could not process the request due to client error",
+                 fn ->
+                   SuccessfulRouter.call(conn, [])
+                 end
   end
 
   test "raises BadRequestError on too large body" do
@@ -130,9 +132,11 @@ defmodule Tipalti.IPN.RouterTest do
 
     conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
 
-    assert_raise Plug.BadRequestError, fn ->
-      SuccessfulRouter.call(conn, [])
-    end
+    assert_raise Plug.Conn.WrapperError,
+                 "** (Plug.BadRequestError) could not process the request due to client error",
+                 fn ->
+                   SuccessfulRouter.call(conn, [])
+                 end
   end
 
   test "raises TimeoutError on body read timeout" do
@@ -141,7 +145,7 @@ defmodule Tipalti.IPN.RouterTest do
 
     conn = Plug.Adapters.Test.Conn.conn(%Plug.Conn{}, :post, "/events/bill_updated", @good_event)
 
-    assert_raise Plug.TimeoutError, fn ->
+    assert_raise Plug.Conn.WrapperError, "** (Plug.TimeoutError) timeout while waiting for request data", fn ->
       SuccessfulRouter.call(conn, [])
     end
   end
