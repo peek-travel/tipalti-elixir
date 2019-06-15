@@ -5,10 +5,9 @@ defmodule Tipalti.API.Payer do
   Details are taken from: <https://api.tipalti.com/v5/PayerFunctions.asmx>
   """
 
-  import SweetXml, only: [sigil_x: 2]
+  import SweetXmlFork, only: [sigil_x: 2]
 
-  alias Tipalti.API.SOAP.Client
-  alias Tipalti.{Invoice, Balance, ClientError, RequestError}
+  alias Tipalti.{API.SOAP.Client, Balance, ClientError, Invoice, RequestError}
 
   @version "v5"
   @url [
@@ -26,32 +25,32 @@ defmodule Tipalti.API.Payer do
   @doc """
   Not yet implemented
   """
-  @spec apply_vendor_credit() :: {:error, :not_yet_implemented}
-  def apply_vendor_credit(), do: {:error, :not_yet_implemented}
+  @spec apply_vendor_credit :: {:error, :not_yet_implemented}
+  def apply_vendor_credit, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec create_extended_payee_status_file() :: {:error, :not_yet_implemented}
-  def create_extended_payee_status_file(), do: {:error, :not_yet_implemented}
+  @spec create_extended_payee_status_file :: {:error, :not_yet_implemented}
+  def create_extended_payee_status_file, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec create_or_update_custom_fields() :: {:error, :not_yet_implemented}
-  def create_or_update_custom_fields(), do: {:error, :not_yet_implemented}
+  @spec create_or_update_custom_fields :: {:error, :not_yet_implemented}
+  def create_or_update_custom_fields, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec create_or_update_gl_accounts() :: {:error, :not_yet_implemented}
-  def create_or_update_gl_accounts(), do: {:error, :not_yet_implemented}
+  @spec create_or_update_gl_accounts :: {:error, :not_yet_implemented}
+  def create_or_update_gl_accounts, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec create_or_update_grns() :: {:error, :not_yet_implemented}
-  def create_or_update_grns(), do: {:error, :not_yet_implemented}
+  @spec create_or_update_grns :: {:error, :not_yet_implemented}
+  def create_or_update_grns, do: {:error, :not_yet_implemented}
 
   @typedoc """
   An invoice approver, used when creating invoices in `create_or_update_invoices/1`.
@@ -255,20 +254,20 @@ defmodule Tipalti.API.Payer do
   @doc """
   Not yet implemented
   """
-  @spec create_or_update_purchase_orders() :: {:error, :not_yet_implemented}
-  def create_or_update_purchase_orders(), do: {:error, :not_yet_implemented}
+  @spec create_or_update_purchase_orders :: {:error, :not_yet_implemented}
+  def create_or_update_purchase_orders, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec create_payee_status_file() :: {:error, :not_yet_implemented}
-  def create_payee_status_file(), do: {:error, :not_yet_implemented}
+  @spec create_payee_status_file :: {:error, :not_yet_implemented}
+  def create_payee_status_file, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec create_payment_orders_report() :: {:error, :not_yet_implemented}
-  def create_payment_orders_report(), do: {:error, :not_yet_implemented}
+  @spec create_payment_orders_report :: {:error, :not_yet_implemented}
+  def create_payment_orders_report, do: {:error, :not_yet_implemented}
 
   @doc """
   Get balances in your accounts.
@@ -288,7 +287,7 @@ defmodule Tipalti.API.Payer do
         }
       ]}
   """
-  @spec get_balances() :: {:ok, [Tipalti.Balance.t()]} | {:error, ClientError.t()} | {:error, RequestError.t()}
+  @spec get_balances :: {:ok, [Tipalti.Balance.t()]} | {:error, ClientError.t()} | {:error, RequestError.t()}
   def get_balances do
     with {:ok, balances_maps} <-
            run(
@@ -315,20 +314,20 @@ defmodule Tipalti.API.Payer do
   @doc """
   Not yet implemented
   """
-  @spec get_custom_fields() :: {:error, :not_yet_implemented}
-  def get_custom_fields(), do: {:error, :not_yet_implemented}
+  @spec get_custom_fields :: {:error, :not_yet_implemented}
+  def get_custom_fields, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec get_dynamic_key() :: {:error, :not_yet_implemented}
-  def get_dynamic_key(), do: {:error, :not_yet_implemented}
+  @spec get_dynamic_key :: {:error, :not_yet_implemented}
+  def get_dynamic_key, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec get_dynamic_key_of_sub_payer() :: {:error, :not_yet_implemented}
-  def get_dynamic_key_of_sub_payer(), do: {:error, :not_yet_implemented}
+  @spec get_dynamic_key_of_sub_payer :: {:error, :not_yet_implemented}
+  def get_dynamic_key_of_sub_payer, do: {:error, :not_yet_implemented}
 
   @doc """
   Return list of payee invoices.
@@ -462,108 +461,108 @@ defmodule Tipalti.API.Payer do
   @doc """
   Not yet implemented
   """
-  @spec get_payer_fees() :: {:error, :not_yet_implemented}
-  def get_payer_fees(), do: {:error, :not_yet_implemented}
+  @spec get_payer_fees :: {:error, :not_yet_implemented}
+  def get_payer_fees, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec get_processing_request_status() :: {:error, :not_yet_implemented}
-  def get_processing_request_status(), do: {:error, :not_yet_implemented}
+  @spec get_processing_request_status :: {:error, :not_yet_implemented}
+  def get_processing_request_status, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec get_provider_accounts() :: {:error, :not_yet_implemented}
-  def get_provider_accounts(), do: {:error, :not_yet_implemented}
+  @spec get_provider_accounts :: {:error, :not_yet_implemented}
+  def get_provider_accounts, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec get_updated_payments() :: {:error, :not_yet_implemented}
-  def get_updated_payments(), do: {:error, :not_yet_implemented}
+  @spec get_updated_payments :: {:error, :not_yet_implemented}
+  def get_updated_payments, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec log_integration_error() :: {:error, :not_yet_implemented}
-  def log_integration_error(), do: {:error, :not_yet_implemented}
+  @spec log_integration_error :: {:error, :not_yet_implemented}
+  def log_integration_error, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec process_multi_currency_payment_file() :: {:error, :not_yet_implemented}
-  def process_multi_currency_payment_file(), do: {:error, :not_yet_implemented}
+  @spec process_multi_currency_payment_file :: {:error, :not_yet_implemented}
+  def process_multi_currency_payment_file, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec process_multi_currency_payment_file_async() :: {:error, :not_yet_implemented}
-  def process_multi_currency_payment_file_async(), do: {:error, :not_yet_implemented}
+  @spec process_multi_currency_payment_file_async :: {:error, :not_yet_implemented}
+  def process_multi_currency_payment_file_async, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec process_payment_file() :: {:error, :not_yet_implemented}
-  def process_payment_file(), do: {:error, :not_yet_implemented}
+  @spec process_payment_file :: {:error, :not_yet_implemented}
+  def process_payment_file, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec process_payment_file_async() :: {:error, :not_yet_implemented}
-  def process_payment_file_async(), do: {:error, :not_yet_implemented}
+  @spec process_payment_file_async :: {:error, :not_yet_implemented}
+  def process_payment_file_async, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec process_payments() :: {:error, :not_yet_implemented}
-  def process_payments(), do: {:error, :not_yet_implemented}
+  @spec process_payments :: {:error, :not_yet_implemented}
+  def process_payments, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec process_payments_async() :: {:error, :not_yet_implemented}
-  def process_payments_async(), do: {:error, :not_yet_implemented}
+  @spec process_payments_async :: {:error, :not_yet_implemented}
+  def process_payments_async, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec process_payments_async_result() :: {:error, :not_yet_implemented}
-  def process_payments_async_result(), do: {:error, :not_yet_implemented}
+  @spec process_payments_async_result :: {:error, :not_yet_implemented}
+  def process_payments_async_result, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec test_multi_currency_payment_file() :: {:error, :not_yet_implemented}
-  def test_multi_currency_payment_file(), do: {:error, :not_yet_implemented}
+  @spec test_multi_currency_payment_file :: {:error, :not_yet_implemented}
+  def test_multi_currency_payment_file, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec test_multi_currency_payment_file_async() :: {:error, :not_yet_implemented}
-  def test_multi_currency_payment_file_async(), do: {:error, :not_yet_implemented}
+  @spec test_multi_currency_payment_file_async :: {:error, :not_yet_implemented}
+  def test_multi_currency_payment_file_async, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec test_payment_file() :: {:error, :not_yet_implemented}
-  def test_payment_file(), do: {:error, :not_yet_implemented}
+  @spec test_payment_file :: {:error, :not_yet_implemented}
+  def test_payment_file, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec test_payment_file_async() :: {:error, :not_yet_implemented}
-  def test_payment_file_async(), do: {:error, :not_yet_implemented}
+  @spec test_payment_file_async :: {:error, :not_yet_implemented}
+  def test_payment_file_async, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec test_payments() :: {:error, :not_yet_implemented}
-  def test_payments(), do: {:error, :not_yet_implemented}
+  @spec test_payments :: {:error, :not_yet_implemented}
+  def test_payments, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec test_payments_async() :: {:error, :not_yet_implemented}
-  def test_payments_async(), do: {:error, :not_yet_implemented}
+  @spec test_payments_async :: {:error, :not_yet_implemented}
+  def test_payments_async, do: {:error, :not_yet_implemented}
 end

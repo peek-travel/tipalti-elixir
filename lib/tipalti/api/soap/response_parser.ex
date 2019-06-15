@@ -1,7 +1,9 @@
 defmodule Tipalti.API.SOAP.ResponseParser do
   @moduledoc false
 
-  import SweetXml
+  import SweetXmlFork
+
+  alias SweetXpathFork, as: SweetXpath
   alias Tipalti.ClientError
 
   def parse(body, root_path, :empty, response_opts) do

@@ -1,6 +1,6 @@
 # NOTE: this has been yanked from https://github.com/peek-travel/sweet_xml
 # because the maintainers of the library have gone MIA and are not merging PRs
-defmodule SweetXpath do
+defmodule SweetXpathFork do
   @moduledoc false
   defmodule Priv do
     @moduledoc false
@@ -17,8 +17,10 @@ defmodule SweetXpath do
             namespaces: []
 end
 
-defmodule SweetXml do
+defmodule SweetXmlFork do
   @moduledoc false
+  alias SweetXpathFork, as: SweetXpath
+
   import Record, only: [defrecord: 2, extract: 2]
 
   @xmerl "xmerl/include/xmerl.hrl"

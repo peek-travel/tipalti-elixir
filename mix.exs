@@ -8,7 +8,7 @@ defmodule Tipalti.MixProject do
       app: :tipalti,
       source_url: "https://github.com/peek-travel/tipalti-elixir",
       version: @version,
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       description: description(),
       package: package(),

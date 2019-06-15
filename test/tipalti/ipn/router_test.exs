@@ -46,7 +46,7 @@ defmodule Tipalti.IPN.RouterTest do
            end) =~ "Event received"
   end
 
-  test "translates events with type \"bills\" to type \"bill_update\"" do
+  test ~s(translates events with type "bills" to type "bill_update") do
     expect(BodyReaderMock, :read_body, fn conn, opts -> Plug.Conn.read_body(conn, opts) end)
     expect(IPNClientMock, :ack, fn _ -> :ok end)
 
