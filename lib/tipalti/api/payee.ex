@@ -5,9 +5,9 @@ defmodule Tipalti.API.Payee do
   Details are taken from: <https://api.tipalti.com/v6/PayeeFunctions.asmx>
   """
 
-  import SweetXml, only: [sigil_x: 2]
+  import SweetXmlFork, only: [sigil_x: 2]
 
-  alias Tipalti.{Payee, PayeeExtended, ClientError, RequestError}
+  alias Tipalti.{ClientError, Payee, PayeeExtended, RequestError}
 
   @version "v6"
   @url [
@@ -25,26 +25,26 @@ defmodule Tipalti.API.Payee do
   @doc """
   Not yet implemented
   """
-  @spec cancel_invoice() :: {:error, :not_yet_implemented}
-  def cancel_invoice(), do: {:error, :not_yet_implemented}
+  @spec cancel_invoice :: {:error, :not_yet_implemented}
+  def cancel_invoice, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec close_payee_account() :: {:error, :not_yet_implemented}
-  def close_payee_account(), do: {:error, :not_yet_implemented}
+  @spec close_payee_account :: {:error, :not_yet_implemented}
+  def close_payee_account, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec create_payee_info_auto_idap() :: {:error, :not_yet_implemented}
-  def create_payee_info_auto_idap(), do: {:error, :not_yet_implemented}
+  @spec create_payee_info_auto_idap :: {:error, :not_yet_implemented}
+  def create_payee_info_auto_idap, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec get_extended_payee_details() :: {:error, :not_yet_implemented}
-  def get_extended_payee_details(), do: {:error, :not_yet_implemented}
+  @spec get_extended_payee_details :: {:error, :not_yet_implemented}
+  def get_extended_payee_details, do: {:error, :not_yet_implemented}
 
   @doc """
   Returns extended details and custom fields of given payees.
@@ -151,20 +151,20 @@ defmodule Tipalti.API.Payee do
   @doc """
   Not yet implemented
   """
-  @spec get_extended_po_details() :: {:error, :not_yet_implemented}
-  def get_extended_po_details(), do: {:error, :not_yet_implemented}
+  @spec get_extended_po_details :: {:error, :not_yet_implemented}
+  def get_extended_po_details, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec get_extended_po_details_list() :: {:error, :not_yet_implemented}
-  def get_extended_po_details_list(), do: {:error, :not_yet_implemented}
+  @spec get_extended_po_details_list :: {:error, :not_yet_implemented}
+  def get_extended_po_details_list, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec get_invoices_payable_amount() :: {:error, :not_yet_implemented}
-  def get_invoices_payable_amount(), do: {:error, :not_yet_implemented}
+  @spec get_invoices_payable_amount :: {:error, :not_yet_implemented}
+  def get_invoices_payable_amount, do: {:error, :not_yet_implemented}
 
   @doc """
   Returns details of a given payee.
@@ -212,8 +212,8 @@ defmodule Tipalti.API.Payee do
   @doc """
   Not yet implemented
   """
-  @spec get_payee_invoice_list() :: {:error, :not_yet_implemented}
-  def get_payee_invoice_list(), do: {:error, :not_yet_implemented}
+  @spec get_payee_invoice_list :: {:error, :not_yet_implemented}
+  def get_payee_invoice_list, do: {:error, :not_yet_implemented}
 
   @doc """
   Returns all invoice reference codes that were updated since the given UTC timestamp.
@@ -242,20 +242,20 @@ defmodule Tipalti.API.Payee do
   @doc """
   Not yet implemented
   """
-  @spec get_payee_pending_invoice_total() :: {:error, :not_yet_implemented}
-  def get_payee_pending_invoice_total(), do: {:error, :not_yet_implemented}
+  @spec get_payee_pending_invoice_total :: {:error, :not_yet_implemented}
+  def get_payee_pending_invoice_total, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec get_payees_changed_since_timestamp() :: {:error, :not_yet_implemented}
-  def get_payees_changed_since_timestamp(), do: {:error, :not_yet_implemented}
+  @spec get_payees_changed_since_timestamp :: {:error, :not_yet_implemented}
+  def get_payees_changed_since_timestamp, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec get_po_details() :: {:error, :not_yet_implemented}
-  def get_po_details(), do: {:error, :not_yet_implemented}
+  @spec get_po_details :: {:error, :not_yet_implemented}
+  def get_po_details, do: {:error, :not_yet_implemented}
 
   @doc """
   Return payable status of payee.
@@ -350,20 +350,20 @@ defmodule Tipalti.API.Payee do
   @doc """
   Not yet implemented
   """
-  @spec payee_update_address() :: {:error, :not_yet_implemented}
-  def payee_update_address(), do: {:error, :not_yet_implemented}
+  @spec payee_update_address :: {:error, :not_yet_implemented}
+  def payee_update_address, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec payee_update_email() :: {:error, :not_yet_implemented}
-  def payee_update_email(), do: {:error, :not_yet_implemented}
+  @spec payee_update_email :: {:error, :not_yet_implemented}
+  def payee_update_email, do: {:error, :not_yet_implemented}
 
   @doc """
   Not yet implemented
   """
-  @spec payments_between_dates() :: {:error, :not_yet_implemented}
-  def payments_between_dates(), do: {:error, :not_yet_implemented}
+  @spec payments_between_dates :: {:error, :not_yet_implemented}
+  def payments_between_dates, do: {:error, :not_yet_implemented}
 
   @doc """
   Updates a payee's basic info.
@@ -438,6 +438,6 @@ defmodule Tipalti.API.Payee do
   @doc """
   Not yet implemented
   """
-  @spec update_payee_custom_fields() :: {:error, :not_yet_implemented}
-  def update_payee_custom_fields(), do: {:error, :not_yet_implemented}
+  @spec update_payee_custom_fields :: {:error, :not_yet_implemented}
+  def update_payee_custom_fields, do: {:error, :not_yet_implemented}
 end

@@ -1,4 +1,6 @@
 defmodule ClientMock do
+  @moduledoc false
+
   require Logger
 
   files = Path.wildcard("./test/requests/*_req.xml")

@@ -1,4 +1,6 @@
 defmodule BodyReader do
+  @moduledoc false
+
   alias Plug.Conn
 
   @callback read_body(Conn.t(), Keyword.t()) ::
