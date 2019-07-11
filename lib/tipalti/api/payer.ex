@@ -165,17 +165,21 @@ defmodule Tipalti.API.Payer do
         },
         %{error_message: nil, ref_code: "testinvoice2", succeeded: true}
       ]}
+
+      iex> too_long_description = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      iex> create_or_update_invoices([%{idap: "somepayee", ref_code: "testinvoice3", due_date: "2018-05-01", date: "2018-06-01", description: too_long_description, currency: "USD", line_items: [%{amount: "100.00", description: "test line item"}]}])
+      {:error, %Tipalti.ClientError{error_code: "UnknownError", error_message: "Internal server errror"}}
   """
   @spec create_or_update_invoices([invoice()]) ::
           {:ok, [%{error_message: String.t() | nil, ref_code: String.t(), succeeded: boolean()}]}
           | {:error, RequestError.t()}
-  def create_or_update_invoices(invoices) do
+  def create_or_update_invoices(invoices_params) do
     payload =
       RequestBuilder.build(
         "CreateOrUpdateInvoices",
         [
           invoices:
-            optional_list(invoices, fn invoice ->
+            optional_list(invoices_params, fn invoice ->
               {:TipaltiInvoiceItemRequest,
                [
                  Idap: invoice[:idap],
@@ -231,7 +235,7 @@ defmodule Tipalti.API.Payer do
     client = Application.get_env(:tipalti, :api_client_module, Client)
 
     with {:ok, body} <- client.send(@url, payload) do
-      response =
+      invoice_responses =
         ResponseParser.parse_without_errors(
           body,
           ~x"//CreateOrUpdateInvoicesResult",
@@ -243,7 +247,15 @@ defmodule Tipalti.API.Payer do
           ]
         )
 
-      {:ok, response}
+      if invoice_responses == [] && invoices_params != [] do
+        {:error,
+         ResponseParser.parse_errors(body, ~x"//CreateOrUpdateInvoicesResult",
+           error_code: ~x"./errorCode/text()"s,
+           error_message: ~x"./errorMessage/text()"os
+         )}
+      else
+        {:ok, invoice_responses}
+      end
     end
   end
 

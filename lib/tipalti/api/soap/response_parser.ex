@@ -57,4 +57,10 @@ defmodule Tipalti.API.SOAP.ResponseParser do
         {:error, ClientError.from_map!(error)}
     end
   end
+
+  def parse_errors(body, root_path, error_paths) do
+    document = xpath(body, ~x"/"e)
+
+    ClientError.from_map!(xpath(document, root_path, error_paths))
+  end
 end
