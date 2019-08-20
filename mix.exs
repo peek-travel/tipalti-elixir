@@ -92,7 +92,7 @@ defmodule Tipalti.MixProject do
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
-      {:ex_money, "~> 2.6 or ~> 3.1"},
+      {:ex_money, "~> 2.6 or ~> 3.1 or ~> 4.1"},
       {:excoveralls, "~> 0.7", only: :test},
       {:hackney, "~> 1.11"},
       {:inch_ex, ">= 0.0.0", only: :docs},
