@@ -96,7 +96,7 @@ defmodule Tipalti.MixProject do
       {:excoveralls, "~> 0.7", only: :test},
       {:hackney, "~> 1.11"},
       {:inch_ex, ">= 0.0.0", only: :docs},
-      {:inflex, "~> 1.10"},
+      {:inflex, "~> 2.0"},
       {:mox, "~> 0.5", only: :test},
       {:plug, "~> 1.6 or ~> 1.7"},
       {:tesla, "~> 1.0"},
