@@ -46,3 +46,53 @@ jobs:
           mix deps.get
       - name: Check formatted
         run: mix format --check-formatted
+
+  test:
+    name: Tests
+
+    needs: compile
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: elixir:1.9.1-alpine
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install dependencies
+        run: |
+          mix local.rebar --force
+          mix local.hex --force
+          mix deps.get
+      - name: Download build artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: _build
+          path: _build
+      - name: Run tests
+        run: mix test
+
+  credo:
+    name: Credo
+
+    needs: compile
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: elixir:1.9.1-alpine
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install Dependencies
+        run: |
+          mix local.rebar --force
+          mix local.hex --force
+          mix deps.get
+      - name: Download build artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: _build
+          path: _build
+      - name: Run credo
+        run: mix credo --strict
