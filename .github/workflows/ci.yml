@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: elixir:1.9.2-alpine
+      image: elixir:1.9.4-alpine
 
     steps:
       - uses: actions/checkout@v1
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: elixir:1.9.1-alpine
+      image: elixir:1.9.4-alpine
 
     steps:
       - uses: actions/checkout@v1
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: elixir:1.9.1-alpine
+      image: elixir:1.9.4-alpine
 
     steps:
       - uses: actions/checkout@v1
@@ -70,7 +70,10 @@ jobs:
           name: _build
           path: _build
       - name: Run tests
-        run: mix test
+        run: mix coveralls.json
+      - uses: codecov/codecov-action@v1.0.2
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
 
   credo:
     name: Credo
@@ -80,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: elixir:1.9.1-alpine
+      image: elixir:1.9.4-alpine
 
     steps:
       - uses: actions/checkout@v1
@@ -96,3 +99,24 @@ jobs:
           path: _build
       - name: Run credo
         run: mix credo --strict
+
+  dialyzer:
+    name: Dialyzer
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: elixir:1.9.4-alpine
+
+    env:
+      MIX_ENV: dev
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install Dependencies
+        run: |
+          mix local.rebar --force
+          mix local.hex --force
+          mix deps.get
+      - name: Run dialyzer
+        run: mix dialyzer --halt-exit-status
