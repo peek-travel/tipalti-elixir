@@ -1,6 +1,6 @@
 # Tipalti
 
-[![Build Status](https://travis-ci.org/peek-travel/tipalti-elixir.svg?branch=master)](https://travis-ci.org/peek-travel/tipalti-elixir)
+[![CI Status](https://github.com/peek-travel/tipalti-elixir/workflows/CI/badge.svg)](https://github.com/peek-travel/tipalti-elixir/actions)
 [![codecov](https://codecov.io/gh/peek-travel/tipalti-elixir/branch/master/graph/badge.svg)](https://codecov.io/gh/peek-travel/tipalti-elixir)
 [![SourceLevel](https://app.sourcelevel.io/github/peek-travel/tipalti-elixir.svg)](https://app.sourcelevel.io/github/peek-travel/tipalti-elixir)
 [![Hex.pm Version](https://img.shields.io/hexpm/v/tipalti.svg?style=flat)](https://hex.pm/packages/tipalti)
