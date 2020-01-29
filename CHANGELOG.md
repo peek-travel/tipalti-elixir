@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased][]
 
+## [0.8.6][] - 2020-01-29
+
+### Updated
+
+- Dependency updates
+- Use GitHub actions for CI
+
 ## [0.8.5][] - 2019-09-13
 
 ### Updated
@@ -103,7 +110,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Initial release
 
-[Unreleased]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.5...HEAD
+[Unreleased]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.6...HEAD
+[0.8.6]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.5...0.8.6
 [0.8.5]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.4...0.8.5
 [0.8.4]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.3...0.8.4
 [0.8.3]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.2...0.8.3
