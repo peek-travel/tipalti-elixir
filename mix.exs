@@ -14,11 +14,7 @@ defmodule Tipalti.MixProject do
       package: package(),
       deps: deps(),
       docs: docs(),
-      dialyzer: [
-        plt_add_deps: :project,
-        plt_add_apps: [:decimal, :xmerl],
-        flags: [:unmatched_returns, :error_handling, :underspecs]
-      ],
+      dialyzer: dialyzer(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -57,6 +53,15 @@ defmodule Tipalti.MixProject do
         "Readme" => "https://github.com/peek-travel/tipalti-elixir/blob/#{@version}/README.md",
         "Changelog" => "https://github.com/peek-travel/tipalti-elixir/blob/#{@version}/CHANGELOG.md"
       }
+    ]
+  end
+
+  defp dialyzer do
+    [
+      plt_file: {:no_warn, "plts/tipalti-elixir.plt"},
+      plt_add_deps: :project,
+      plt_add_apps: [:decimal, :xmerl],
+      flags: [:unmatched_returns, :error_handling, :underspecs]
     ]
   end
 
