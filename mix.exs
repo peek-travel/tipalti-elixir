@@ -102,7 +102,7 @@ defmodule Tipalti.MixProject do
       {:hackney, "~> 1.11"},
       {:inch_ex, ">= 0.0.0", only: :docs},
       {:inflex, "~> 1.0 or ~> 2.0"},
-      {:mox, "~> 0.5", only: :test},
+      {:mox, "~> 1.0", only: :test},
       {:plug, "~> 1.6 or ~> 1.7"},
       {:tesla, "~> 1.0"},
       {:xml_builder, "~> 2.1"}
