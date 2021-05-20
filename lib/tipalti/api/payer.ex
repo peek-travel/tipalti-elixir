@@ -169,6 +169,13 @@ defmodule Tipalti.API.Payer do
       iex> too_long_description = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
       iex> create_or_update_invoices([%{idap: "somepayee", ref_code: "testinvoice3", due_date: "2018-05-01", date: "2018-06-01", description: too_long_description, currency: "USD", line_items: [%{amount: "100.00", description: "test line item"}]}])
       {:error, %Tipalti.ClientError{error_code: "UnknownError", error_message: "Internal server errror"}}
+
+      iex> custom_fields = [%{key: "foo", value: "bar"}]
+      ...> line_items = [%{amount: "100.00", description: "test line item", custom_fields: custom_fields}]
+      ...> approvers = [%{name: "Mr. Approver", email: "approver@example.com", order: 1}]
+      ...> invoice = %{idap: "somepayee", ref_code: "testinvoice", due_date: "2018-06-01", date: "2018-05-01", subject: "test invoice", currency: "USD", line_items: line_items, custom_fields: custom_fields, approvers: approvers}
+      ...> create_or_update_invoices([invoice])
+      {:ok, [%{error_message: nil, ref_code: "testinvoice", succeeded: true}]}
   """
   @spec create_or_update_invoices([invoice()]) ::
           {:ok, [%{error_message: String.t() | nil, ref_code: String.t(), succeeded: boolean()}]}

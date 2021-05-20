@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap12:Envelope xmlns:soap12="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soap12:Body>
+    <CreateOrUpdateInvoices xmlns="http://Tipalti.org/">
+      <payerName>MyPayer</payerName>
+      <timestamp>1521234048</timestamp>
+      <key>bbffdacec3452b3ea2a23302589166c3fdee0224c5c07dd66b04a357d8bc1162</key>
+      <invoices>
+        <TipaltiInvoiceItemRequest>
+          <Idap>somepayee</Idap>
+          <InvoiceRefCode>testinvoice</InvoiceRefCode>
+          <InvoiceDate>2018-05-01</InvoiceDate>
+          <InvoiceDueDate>2018-06-01</InvoiceDueDate>
+          <InvoiceLines>
+            <InvoiceLine>
+              <Amount>100.00</Amount>
+              <Description>test line item</Description>
+              <CustomFields>
+                <KeyValuePair>
+                  <Key>foo</Key>
+                  <Value>bar</Value>
+                </KeyValuePair>
+              </CustomFields>
+            </InvoiceLine>
+          </InvoiceLines>
+          <CustomFields>
+            <KeyValuePair>
+              <Key>foo</Key>
+              <Value>bar</Value>
+            </KeyValuePair>
+          </CustomFields>
+          <Currency>USD</Currency>
+          <Approvers>
+            <TipaltiInvoiceApprover>
+              <Name>Mr. Approver</Name>
+              <Email>approver@example.com</Email>
+              <Order>1</Order>
+            </TipaltiInvoiceApprover>
+          </Approvers>
+          <InvoiceSubject>test invoice</InvoiceSubject>
+        </TipaltiInvoiceItemRequest>
+      </invoices>
+    </CreateOrUpdateInvoices>
+  </soap12:Body>
+</soap12:Envelope>
