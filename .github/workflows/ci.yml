@@ -197,8 +197,8 @@ jobs:
     env:
       MIX_ENV: dev
       # Change either of these if you want to bust the cache:
-      DEPS_CACHE_PREFIX: dialyzer-v1-
-      BUILD_CACHE_PREFIX: dialyzer-v1-
+      DEPS_CACHE_PREFIX: dialyzer-v2-
+      BUILD_CACHE_PREFIX: dialyzer-v2-
 
     steps:
       # shared steps
