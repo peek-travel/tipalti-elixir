@@ -33,7 +33,7 @@ defmodule Tipalti.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :xmerl]
     ]
   end
 
@@ -58,9 +58,9 @@ defmodule Tipalti.MixProject do
 
   defp dialyzer do
     [
-      plt_file: {:no_warn, "plts/tipalti-elixir.plt"},
       plt_add_deps: :project,
       plt_add_apps: [:decimal, :xmerl],
+      plt_core_path: "_build/#{Mix.env()}",
       flags: [:unmatched_returns, :error_handling, :underspecs]
     ]
   end

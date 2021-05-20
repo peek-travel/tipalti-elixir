@@ -9,7 +9,10 @@ defmodule Tipalti.Config do
 
   def master_key, do: get_env(:master_key)
 
-  def build_hashkey(string), do: :sha256 |> :crypto.hmac(master_key(), string) |> Base.encode16(case: :lower)
+  def build_hashkey(string) do
+    :crypto.mac(:hmac, :sha256, master_key(), string)
+    |> Base.encode16(case: :lower)
+  end
 
   def timestamp, do: Application.get_env(:tipalti, :system_time_module, SystemTime).timestamp()
 

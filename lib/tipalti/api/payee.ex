@@ -400,6 +400,9 @@ defmodule Tipalti.API.Payee do
 
         iex> update_or_create_payee_info("invalidname", %{first_name: "José", last_name: "Valim"}, skip_nulls: true, override_payable_country: false)
         {:error, %Tipalti.ClientError{error_code: "ParameterError", error_message: "Invalid payee first name"}}
+
+        iex> update_or_create_payee_info("newpayee", %{first_name: "John", last_name: "Smith"}, [])
+        {:error, {:missing_required_option, :skip_nulls}}
   """
   @spec update_or_create_payee_info(Tipalti.idap(), map(), keyword()) ::
           :ok | {:error, ClientError.t()} | {:error, RequestError.t()}
