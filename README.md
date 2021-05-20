@@ -11,9 +11,9 @@
 
 This library includes:
 
-* Payee and Payer SOAP API clients
-* iFrame integration helpers
-* IPN Router builder
+-   Payee and Payer SOAP API clients
+-   iFrame integration helpers
+-   IPN Router builder
 
 > **NOTE**: Not all API functions have been implemented yet; this library is a work in progress.
 
@@ -24,7 +24,7 @@ The package can be installed by adding `tipalti` to your list of dependencies in
 ```elixir
 def deps do
   [
-    {:tipalti, "~> 0.8.6"}
+    {:tipalti, "~> 0.9"}
   ]
 end
 ```
@@ -42,4 +42,4 @@ config :tipalti,
   master_key: "boguskey"
 ```
 
-Documentation can be found at [https://hexdocs.pm/tipalti](https://hexdocs.pm/tipalti).
+Documentation can be found at <https://hexdocs.pm/tipalti>.
