@@ -10,6 +10,7 @@ defmodule Tipalti.API.SOAP.Client do
   adapter Tesla.Adapter.Hackney, recv_timeout: Application.get_env(:tipalti, :client_recv_timeout, 60_000)
 
   plug Tesla.Middleware.Headers, [{"Content-Type", "application/soap+xml; charset=utf-8"}]
+  plug Tesla.Middleware.Telemetry
 
   @spec send(Keyword.t(), String.t()) :: {:ok, String.t()} | {:error, RequestError.t()}
   def send(base_urls, payload) do

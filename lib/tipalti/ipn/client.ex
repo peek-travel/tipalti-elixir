@@ -16,6 +16,7 @@ defmodule Tipalti.IPN.Client do
   adapter Tesla.Adapter.Hackney, recv_timeout: Application.get_env(:tipalti, :client_recv_timeout, 60_000)
 
   plug Tesla.Middleware.Headers, [{"Content-Type", "application/x-www-form-urlencoded"}]
+  plug Tesla.Middleware.Telemetry
 
   @url [
     sandbox: "https://console.sandbox.tipalti.com/notif/ipn.aspx",
