@@ -23,12 +23,14 @@
               </CustomFields>
             </InvoiceLine>
           </InvoiceLines>
+          <CanApprove>false</CanApprove>
           <CustomFields>
             <KeyValuePair>
               <Key>foo</Key>
               <Value>bar</Value>
             </KeyValuePair>
           </CustomFields>
+          <IsPaidManually>false</IsPaidManually>
           <Currency>USD</Currency>
           <Approvers>
             <TipaltiInvoiceApprover>
