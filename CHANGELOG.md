@@ -6,7 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased][]
+### Fixed
 
+- Make `can_approve` and `is_paid_manually` fields from Payer API required to match Tipalti specification
+
+### Updated
+
+- Updates on Tipalti documentation urls
 ## [0.9.0][] - 2021-05-20
 
 ### Updated
