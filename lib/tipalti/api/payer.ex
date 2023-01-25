@@ -84,8 +84,8 @@ defmodule Tipalti.API.Payer do
           required(:date) => String.t(),
           required(:idap) => Tipalti.idap(),
           required(:subject) => String.t(),
-          optional(:can_approve) => boolean(),
-          optional(:is_paid_manually) => boolean(),
+          required(:can_approve) => boolean(),
+          required(:is_paid_manually) => boolean(),
           optional(:ap_account_number) => String.t(),
           optional(:approvers) => [invoice_approver()],
           optional(:currency) => String.t(),
@@ -107,7 +107,7 @@ defmodule Tipalti.API.Payer do
   Returns a list of invoice responses for each invoice,
   indicating if it succeeded and what the errors were if it didn't.
 
-  See <https://support.tipalti.com/Content/Topics/Development/APIs/PayerApi.htm> for details.
+  See <https://support.tipalti.com/Content/Topics/Development/APIs/PayeeAPI/Intro.htm> for details.
 
   ## Parameters
 
@@ -155,7 +155,7 @@ defmodule Tipalti.API.Payer do
 
   ## Examples
 
-      iex> create_or_update_invoices([%{idap: "somepayee", ref_code: "testinvoice1", due_date: "2018-05-01", date: "2018-06-01", subject: "test invoice 1", currency: "USD", line_items: [%{amount: "100.00", description: "test line item"}]}, %{idap: "somepayee", ref_code: "testinvoice2", due_date: "2018-06-01", date: "2018-05-01", subject: "test invoice 2", currency: "USD", line_items: [%{amount: "100.00", description: "test line item"}]}])
+      iex> create_or_update_invoices([%{idap: "somepayee", can_approve: false, is_paid_manually: false, ref_code: "testinvoice1", due_date: "2018-05-01", date: "2018-06-01", subject: "test invoice 1", currency: "USD", line_items: [%{amount: "100.00", description: "test line item"}]}, %{idap: "somepayee", ref_code: "testinvoice2", due_date: "2018-06-01", date: "2018-05-01", subject: "test invoice 2", currency: "USD", line_items: [%{amount: "100.00", description: "test line item"}]}])
       {:ok,
       [
         %{
@@ -173,7 +173,7 @@ defmodule Tipalti.API.Payer do
       iex> custom_fields = [%{key: "foo", value: "bar"}]
       ...> line_items = [%{amount: "100.00", description: "test line item", custom_fields: custom_fields}]
       ...> approvers = [%{name: "Mr. Approver", email: "approver@example.com", order: 1}]
-      ...> invoice = %{idap: "somepayee", ref_code: "testinvoice", due_date: "2018-06-01", date: "2018-05-01", subject: "test invoice", currency: "USD", line_items: line_items, custom_fields: custom_fields, approvers: approvers}
+      ...> invoice = %{idap: "somepayee", can_approve: false, is_paid_manually: false, ref_code: "testinvoice", due_date: "2018-06-01", date: "2018-05-01", subject: "test invoice", currency: "USD", line_items: line_items, custom_fields: custom_fields, approvers: approvers}
       ...> create_or_update_invoices([invoice])
       {:ok, [%{error_message: nil, ref_code: "testinvoice", succeeded: true}]}
   """

@@ -17,6 +17,8 @@
               <Description>test line item</Description>
             </InvoiceLine>
           </InvoiceLines>
+          <CanApprove>false</CanApprove>
+          <IsPaidManually>false</IsPaidManually>
           <Currency>USD</Currency>
           <InvoiceSubject>test invoice 1</InvoiceSubject>
         </TipaltiInvoiceItemRequest>
