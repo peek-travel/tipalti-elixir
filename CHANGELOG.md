@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased][]
 
+- No changes
+
+## [0.10.0][]
+
+### Fixed
+
+- Make `can_approve` and `is_paid_manually` fields from Payer API required to match Tipalti specification
+
+### Updated
+
+- Updates on Tipalti documentation urls
 ## [0.9.0][] - 2021-05-20
 
 ### Updated
@@ -121,7 +132,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Initial release
 
-[Unreleased]: https://github.com/peek-travel/tipalti-elixir/compare/0.9.0...HEAD
+[Unreleased]: https://github.com/peek-travel/tipalti-elixir/compare/0.10.0...HEAD
+
+[0.10.0]: https://github.com/peek-travel/tipalti-elixir/compare/0.9.0...0.10.0
 
 [0.9.0]: https://github.com/peek-travel/tipalti-elixir/compare/0.8.6...0.9.0
 
